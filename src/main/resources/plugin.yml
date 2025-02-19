@@ -1,0 +1,9 @@
+name: EldenRingUHC
+version: 1.1
+main: main.main
+
+commands:
+  sethote:
+    description: Définit l'hôte du UHC.
+    usage: /sethote <joueur>
+    permission: op
