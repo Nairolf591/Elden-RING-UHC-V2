@@ -78,7 +78,7 @@ public class BorderMenu {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
     }
     private static void updateMenu(Player player) {
-        World world = player.getWorld();
+        World world = Bukkit.getWorld("UHC");
         double borderSize = world.getWorldBorder().getSize();
         double borderDamage = world.getWorldBorder().getDamageAmount();
 
