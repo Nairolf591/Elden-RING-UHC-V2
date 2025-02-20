@@ -87,13 +87,13 @@ public class GameManager {
     }
 
     private void startStartingPhase() {
-        // Téléporter tous les joueurs dans le monde "UHC"
         World uhcWorld = Bukkit.getWorld("UHC");
         if (uhcWorld == null) {
             Bukkit.broadcastMessage(ChatColor.RED + "Erreur : Le monde UHC n'existe pas !");
             return;
         }
 
+        // Téléporter tous les joueurs dans le monde "UHC"
         for (Player player : Bukkit.getOnlinePlayers()) {
             Location spawnLocation = uhcWorld.getSpawnLocation();
             Location randomLocation = spawnLocation.clone().add(
@@ -110,6 +110,9 @@ public class GameManager {
             player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 255, false, false));
         }
 
+        // Informer les joueurs de l'invincibilité
+        Bukkit.broadcastMessage(ChatColor.GOLD + "Invincibilité activée pendant 2 minutes !");
+
         // Désactiver le PvP pendant 2 minutes 30
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             for (World world : Bukkit.getWorlds()) {
@@ -117,6 +120,11 @@ public class GameManager {
             }
             Bukkit.broadcastMessage(ChatColor.GREEN + "Le PvP est maintenant activé !");
         }, 3000); // 2 minutes 30 (3000 ticks)
+
+        // Informer les joueurs du temps restant avant l'activation du PvP
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            Bukkit.broadcastMessage(ChatColor.YELLOW + "Le PvP sera activé dans 1 minute !");
+        }, 2400); // 1 minute avant l'activation du PvP
 
         // Révoquer l'invincibilité après 2 minutes
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -143,8 +151,10 @@ public class GameManager {
         if (uhcWorld != null) {
             dayNightCycle = new DayNightCycle(plugin, uhcWorld, 600, 600); // 10 minutes de jour, 10 minutes de nuit
             dayNightCycle.startCycle();
+            Bukkit.broadcastMessage(ChatColor.YELLOW + "Le cycle jour/nuit est activé : 10 minutes de jour, 10 minutes de nuit.");
         }
     }
+
 
 
 }

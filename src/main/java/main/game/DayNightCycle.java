@@ -23,35 +23,40 @@ public class DayNightCycle {
     }
 
     public void startCycle() {
-        // Démarrer le cycle jour/nuit
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (isDay) {
-                    // Passer à la nuit
-                    world.setTime(18000); // Temps de nuit dans Minecraft
-                    isDay = false;
-                    Bukkit.broadcastMessage(ChatColor.BLUE + "La nuit tombe...");
-                    // Planifier la fin de la nuit
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::startDay, nightDuration * 20);
-                } else {
-                    // Passer au jour
-                    world.setTime(0); // Temps de jour dans Minecraft
-                    isDay = true;
-                    Bukkit.broadcastMessage(ChatColor.YELLOW + "Le jour se lève...");
-                    // Planifier la fin du jour
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, this::startNight, dayDuration * 20);
-                }
-            }
+        // Réinitialiser le temps du monde (jour 0)
+        world.setFullTime(0);
 
-            private void startDay() {
-                isDay = true;
-            }
+        // Commencer directement par le jour
+        world.setTime(0); // Temps de jour
+        isDay = true;
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Le jour commence !");
 
-            private void startNight() {
-                isDay = false;
-            }
-        }.runTaskTimer(plugin, 0, (dayDuration + nightDuration) * 20);
+        // Planifier la nuit après la durée du jour
+        scheduleNight();
+    }
+
+    private void scheduleNight() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            // Passer à la nuit
+            world.setTime(18000); // Temps de nuit dans Minecraft
+            isDay = false;
+            Bukkit.broadcastMessage(ChatColor.BLUE + "La nuit tombe...");
+
+            // Planifier le prochain jour après la durée de la nuit
+            scheduleDay();
+        }, dayDuration * 20); // Convertir la durée du jour en ticks
+    }
+
+    private void scheduleDay() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            // Passer au jour
+            world.setTime(0); // Temps de jour
+            isDay = true;
+            Bukkit.broadcastMessage(ChatColor.YELLOW + "Le jour se lève...");
+
+            // Planifier la prochaine nuit après la durée du jour
+            scheduleNight();
+        }, nightDuration * 20); // Convertir la durée de la nuit en ticks
     }
 
     public void setDayDuration(int dayDuration) {
