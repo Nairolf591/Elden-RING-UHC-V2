@@ -24,10 +24,11 @@ public final class main extends JavaPlugin implements Listener {
     private EldenRingUHCScoreboard eldenScoreboardManager; // Utilisation de la classe renommée
     private GameScoreboard gameScoreboard; // Déclarer gameScoreboard en tant que champ
     private ScoreboardManager scoreboardManager;
+    private static main instance; // Stocker une instance statique de la classe
 
     @Override
     public void onEnable() {
-        getLogger().info("Elden Ring UHC Activé !");
+        getLogger().info("Elden Ring UHC test");
 
         // Désactiver la régénération naturelle
         Bukkit.getWorlds().forEach(world -> {
@@ -72,10 +73,12 @@ public final class main extends JavaPlugin implements Listener {
 
         // Exemple : Mettre à jour le scoreboard pour tous les joueurs
         startScoreboardUpdater();
-        eldenScoreboardManager = new EldenRingUHCScoreboard(this);
+        // Initialiser le gestionnaire de scoreboard
         this.scoreboardManager = new ScoreboardManager(this);
-        EldenRingUHCScoreboard menuScoreboard = scoreboardManager.getMenuScoreboard();
 
+        instance = this; // Initialiser l'instance
+
+        getLogger().info("Elden Ring UHC Activé !");
     }
 
     @Override
@@ -86,22 +89,29 @@ public final class main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        // Créer et afficher le scoreboard pour le joueur
-        eldenScoreboardManager.createScoreboard(player);
-        eldenScoreboardManager.updateScoreboard(player);
+        GameState currentGameState = GameManager.getInstance().getCurrentState(); // Récupérer l'état actuel du jeu
+        getLogger().info("État du jeu lors de la connexion : " + currentGameState); // Debug
+        main.getInstance().getScoreboardManager().updateScoreboard(player, currentGameState); // Mettre à jour le scoreboard
     }
 
-    public EldenRingUHCScoreboard getScoreboardManager() {
-        return eldenScoreboardManager;
+    public ScoreboardManager getScoreboardManager() { // Retourne un ScoreboardManager
+        return scoreboardManager;
     }
 
     private void startScoreboardUpdater() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                gameScoreboard.updateScoreboard(player, GameState.STARTING); // ou GameState.PLAYING
+            if (GameManager.getInstance().getCurrentState() != GameState.CONFIG) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    gameScoreboard.updateScoreboard(player, GameManager.getInstance().getCurrentState());
+                }
             }
         }, 0L, 20L); // Exécuter toutes les secondes (20 ticks = 1 seconde)
     }
+    public static main getInstance() {
+        return instance;
+    }
+
+
+
 
 }

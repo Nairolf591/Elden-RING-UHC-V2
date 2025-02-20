@@ -97,7 +97,7 @@ public class StuffManager {
             defaultStuff[5] = new ItemStack(Material.COBBLESTONE, 64);
 
             // Blocs de bûches (64)
-            defaultStuff[6] = new ItemStack(Material.OAK_LOG, 64);
+            defaultStuff[6] = new ItemStack(Material.OAK_PLANKS, 64);
 
             // Casque en fer
             defaultStuff[7] = new ItemStack(Material.IRON_HELMET);

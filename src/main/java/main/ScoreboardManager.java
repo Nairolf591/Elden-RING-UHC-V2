@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import static org.bukkit.Bukkit.getLogger;
+
 public class ScoreboardManager implements Listener {
 
     private final GameScoreboard gameScoreboard; // Scoreboard de la partie (Playing)
@@ -24,17 +26,27 @@ public class ScoreboardManager implements Listener {
         // Supprimer l'ancien scoreboard
         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
+        // Debug
+        getLogger().info("Mise à jour du scoreboard pour " + player.getName() + " en mode " + gameState);
+
         // Afficher le bon scoreboard en fonction du mode
         switch (gameState) {
             case CONFIG:
-            case STARTING:
-                menuScoreboard.updateScoreboard(player);
+                menuScoreboard.createScoreboard(player); // Afficher EldenRingUHCScoreboard
                 break;
+            case STARTING:
             case PLAYING:
-                gameScoreboard.updateScoreboard(player, 10, 1, 0); // Exemple de paramètres à adapter
+            case END:
+                gameScoreboard.updateScoreboard(player, gameState); // Afficher GameScoreboard
+                break;
+            default:
+                // Par défaut, afficher le scoreboard du menu
+                menuScoreboard.createScoreboard(player);
                 break;
         }
     }
+
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();

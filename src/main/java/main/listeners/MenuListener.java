@@ -2,6 +2,8 @@ package main.listeners;
 
 import main.main; // Importe la classe `main` depuis le package `main`
 import main.EldenRingUHCScoreboard;
+
+import main.ScoreboardManager;
 import main.game.*;
 import main.menus.*;
 import org.bukkit.Bukkit;
@@ -84,9 +86,10 @@ public class MenuListener implements Listener {
                     break;
             }
             // Mettre à jour le scoreboard pour tous les joueurs
-            EldenRingUHCScoreboard scoreboardManager = ((main) Bukkit.getPluginManager().getPlugin("EldenRingUHC")).getScoreboardManager();
+            ScoreboardManager scoreboardManager = main.getInstance().getScoreboardManager();
+            GameState currentGameState = GameManager.getInstance().getCurrentState(); // Récupérer l'état actuel du jeu
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                scoreboardManager.updateScoreboard(onlinePlayer);
+                scoreboardManager.updateScoreboard(onlinePlayer,currentGameState);
             }
         }
 

@@ -1,10 +1,14 @@
 package main.game;
 
+import main.main;
+import main.ScoreboardManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import static org.bukkit.Bukkit.getLogger;
 
 
 public class GameManager {
@@ -42,11 +46,21 @@ public class GameManager {
         // Notifier les joueurs du changement d'état
         Bukkit.broadcastMessage(ChatColor.GOLD + "État du jeu : " + newState.getDisplayName());
 
+        // Debug
+        getLogger().info("Changement d'état du jeu : " + newState);
+
+        // Mettre à jour le scoreboard de tous les joueurs
+        ScoreboardManager scoreboardManager = main.getInstance().getScoreboardManager();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            scoreboardManager.updateScoreboard(player, newState);
+        }
+
         // Si l'état est STARTING, lancer la phase de démarrage
         if (newState == GameState.STARTING) {
             startStartingPhase();
         }
     }
+
     private void giveStuff() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().clear(); // Clear l'inventaire du joueur
