@@ -4,6 +4,8 @@ import main.command.ConfirmStuffCommand;
 import main.command.SetHostCommand;
 import main.command.StopUHCCommand;
 import main.game.GameManager;
+import main.game.GameScoreboard;
+import main.game.GameState;
 import main.game.PlayerManager;
 import main.listeners.ConfigMenuListener;
 import main.listeners.ConfigurationCompassListener;
@@ -20,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class main extends JavaPlugin implements Listener {
 
     private EldenRingUHCScoreboard scoreboardManager; // Utilisation de la classe renommée
+    private GameScoreboard gameScoreboard; // Déclarer gameScoreboard en tant que champ
 
     @Override
     public void onEnable() {
@@ -63,6 +66,12 @@ public final class main extends JavaPlugin implements Listener {
         // Enregistrer les événements
         getServer().getPluginManager().registerEvents(this, this);
 
+        // Initialiser le scoreboard en jeu
+        this.gameScoreboard = new GameScoreboard();
+
+        // Exemple : Mettre à jour le scoreboard pour tous les joueurs
+        startScoreboardUpdater();
+
     }
 
     @Override
@@ -78,4 +87,17 @@ public final class main extends JavaPlugin implements Listener {
         scoreboardManager.createScoreboard(player);
         scoreboardManager.updateScoreboard(player);
     }
+
+    public EldenRingUHCScoreboard getScoreboardManager() {
+        return scoreboardManager;
+    }
+
+    private void startScoreboardUpdater() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                gameScoreboard.updateScoreboard(player, GameState.STARTING); // ou GameState.PLAYING
+            }
+        }, 0L, 20L); // Exécuter toutes les secondes (20 ticks = 1 seconde)
+    }
+
 }

@@ -77,4 +77,43 @@ public class BorderMenu {
         // Jouer un son
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
     }
+    private static void updateMenu(Player player) {
+        World world = player.getWorld();
+        double borderSize = world.getWorldBorder().getSize();
+        double borderDamage = world.getWorldBorder().getDamageAmount();
+
+        // Créer l'inventaire de menu
+        Inventory menu = Bukkit.createInventory(null, 9, TITLE);
+
+        // Boutons pour modifier la bordure
+        menu.setItem(1, createMenuItem(Material.ARROW, "§a§lAugmenter la bordure", "§7Cliquez pour augmenter la taille de la bordure."));
+        menu.setItem(3, createMenuItem(Material.SPECTRAL_ARROW, "§c§lRéduire la bordure", "§7Cliquez pour réduire la taille de la bordure."));
+
+        // Info sur la bordure
+        menu.setItem(2, createMenuItem(Material.BEACON, "§6§lTaille Actuelle", "§7Taille : " + String.format("%.2f", borderSize) + " blocs."));
+
+        // Boutons pour modifier les dégâts
+        menu.setItem(5, createMenuItem(Material.TNT, "§4§lAugmenter les dégâts", "§7Cliquez pour augmenter les dégâts de la bordure."));
+        menu.setItem(6, createMenuItem(Material.FEATHER, "§f§lRéduire les dégâts", "§7Cliquez pour réduire les dégâts de la bordure."));
+
+        // Info sur les dégâts
+        menu.setItem(6, createMenuItem(Material.REDSTONE, "§c§lDégâts Actuels", "§7Dégâts : " + String.format("%.2f", borderDamage) + " par seconde."));
+
+        // Bouton Retour
+        menu.setItem(8, createMenuItem(Material.BARRIER, "§c§lRetour", "§7Cliquez pour retourner au menu principal."));
+
+        // Ouvrir le menu au joueur
+        player.openInventory(menu);
+    }
+
+    private static ItemStack createMenuItem(Material material, String name, String... lore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
 }

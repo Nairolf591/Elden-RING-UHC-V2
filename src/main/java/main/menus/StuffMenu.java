@@ -18,22 +18,23 @@ public class StuffMenu {
         Inventory menu = Bukkit.createInventory(null, 9, TITLE);
 
         // Bouton Retour
-        ItemStack backButton = new ItemStack(Material.BARRIER);
-        ItemMeta backButtonMeta = backButton.getItemMeta();
-        backButtonMeta.setDisplayName("§c§lRetour");
-        backButtonMeta.setLore(Arrays.asList("§7Cliquez pour retourner au menu principal."));
-        backButton.setItemMeta(backButtonMeta);
-        menu.setItem(0, backButton);
+        menu.setItem(0, createMenuItem(Material.BARRIER, "§c§lRetour", "§7Cliquez pour retourner au menu principal."));
 
         // Bouton Modifier le stuff
-        ItemStack editButton = new ItemStack(Material.ANVIL);
-        ItemMeta editButtonMeta = editButton.getItemMeta();
-        editButtonMeta.setDisplayName("§e§lModifier le Stuff");
-        editButtonMeta.setLore(Arrays.asList("§7Cliquez pour modifier le stuff par défaut."));
-        editButton.setItemMeta(editButtonMeta);
-        menu.setItem(4, editButton);
+        menu.setItem(4, createMenuItem(Material.ANVIL, "§e§lModifier le Stuff", "§7Cliquez pour modifier le stuff par défaut."));
 
         // Ouvrir le menu au joueur
         player.openInventory(menu);
+    }
+
+    private static ItemStack createMenuItem(Material material, String name, String... lore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 }

@@ -1,8 +1,12 @@
 package main.listeners;
 
+import main.main; // Importe la classe `main` depuis le package `main`
+import main.EldenRingUHCScoreboard;
 import main.game.*;
 import main.menus.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,13 +61,13 @@ public class MenuListener implements Listener {
             RoleManager roleManager = RoleManager.getInstance();
 
             switch (itemName) {
-                case "§7Le Sans-Éclat":
+                case "§aLe Sans-Éclat":
                     roleManager.toggleRole(Role.SANS_ECLAT);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     player.sendMessage("§7Le Sans-Éclat est maintenant " + (roleManager.isRoleEnabled(Role.SANS_ECLAT) ? "§aactivé" : "§cdésactivé") + "§7.");
                     RolesMenu.open(player); // Recharger le menu pour afficher le nouvel état
                     break;
-                case "§cRadahn":
+                case "§6Radahn":
                     roleManager.toggleRole(Role.RADAHN);
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     player.sendMessage("§cRadahn est maintenant " + (roleManager.isRoleEnabled(Role.RADAHN) ? "§aactivé" : "§cdésactivé") + "§c.");
@@ -79,6 +83,11 @@ public class MenuListener implements Listener {
                     MainMenu.open(player);
                     break;
             }
+            // Mettre à jour le scoreboard pour tous les joueurs
+            EldenRingUHCScoreboard scoreboardManager = ((main) Bukkit.getPluginManager().getPlugin("EldenRingUHC")).getScoreboardManager();
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                scoreboardManager.updateScoreboard(onlinePlayer);
+            }
         }
 
         else if (event.getView().getTitle().equals(StuffMenu.TITLE)) {
@@ -88,9 +97,45 @@ public class MenuListener implements Listener {
                 case "§c§lRetour":
                     MainMenu.open(player);
                     break;
-                case "§e§lModifier":
+                case "§e§lModifier le Stuff":
                     StuffManager.getInstance().applyStuff(player);
                     player.sendMessage("§eModifie le stuff, puis tape §a/ConfirmStuff §epour sauvegarder.");
+                    break;
+            }
+        }
+        // Vérifier si le clic se produit dans un menu
+        if (event.getView().getTitle().equals(BorderMenu.TITLE)) {
+            event.setCancelled(true); // Empêcher de bouger les items
+
+            clickedItem = event.getCurrentItem();
+            if (clickedItem == null || !clickedItem.hasItemMeta()) return;
+
+            itemName = clickedItem.getItemMeta().getDisplayName();
+            World world = player.getWorld();
+
+            switch (itemName) {
+                case "§a§lAugmenter la bordure":
+                    world.getWorldBorder().setSize(world.getWorldBorder().getSize() + 100); // Augmenter la bordure de 100 blocs
+                    BorderMenu.open(player); // Rafraîchir le menu
+                    break;
+
+                case "§c§lRéduire la bordure":
+                    world.getWorldBorder().setSize(Math.max(50, world.getWorldBorder().getSize() - 100)); // Réduire la bordure de 100 blocs (minimum 50)
+                    BorderMenu.open(player); // Rafraîchir le menu
+                    break;
+
+                case "§4§lAugmenter les dégâts":
+                    world.getWorldBorder().setDamageAmount(world.getWorldBorder().getDamageAmount() + 1); // Augmenter les dégâts de 1
+                    BorderMenu.open(player); // Rafraîchir le menu
+                    break;
+
+                case "§f§lRéduire les dégâts":
+                    world.getWorldBorder().setDamageAmount(Math.max(0, world.getWorldBorder().getDamageAmount() - 1)); // Réduire les dégâts de 1 (minimum 0)
+                    BorderMenu.open(player); // Rafraîchir le menu
+                    break;
+
+                case "§c§lRetour":
+                    MainMenu.open(player); // Retour au menu principal
                     break;
             }
         }

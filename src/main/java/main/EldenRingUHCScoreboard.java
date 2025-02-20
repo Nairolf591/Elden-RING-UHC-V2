@@ -33,29 +33,34 @@ public class EldenRingUHCScoreboard {
     }
 
     private void setScoreboardLines(Player player, Objective objective) {
-        for (String entry : objective.getScoreboard().getEntries()) {
-            objective.getScoreboard().resetScores(entry);
-        }
+            for (String entry : objective.getScoreboard().getEntries()) {
+                objective.getScoreboard().resetScores(entry);
+            }
 
-        // Titre du scoreboard
-        objective.setDisplayName("§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-        addLine(objective, "§f⚔️ §lElden Ring UHC §r§fV1.1", 10);
-        addLine(objective, "§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", 9);
+            // Titre du scoreboard
+            objective.setDisplayName("§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+            addLine(objective, "§f⚔️ §lElden Ring UHC §r§fV1.1", 10);
+            addLine(objective, "§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", 9);
 
-        // Informations du scoreboard
-        addLine(objective, "§f👥 Joueurs: §a" + Bukkit.getOnlinePlayers().size(), 8);
-        addLine(objective, "§f👑 Hôte: §c" + this.hostName, 7);
+            // Informations du scoreboard
+            addLine(objective, "§f👥 Joueurs: §a" + Bukkit.getOnlinePlayers().size(), 8);
+            addLine(objective, "§f👑 Hôte: §c" + this.hostName, 7);
 
-        // Rôles activés
-        StringBuilder rolesBuilder = new StringBuilder("§f🎭 Rôles: §a");
+            // Rôles activés
+            StringBuilder rolesBuilder = new StringBuilder("§f🎭 Rôles: §a");
+
+        // Rôles activés (une ligne par rôle)
         RoleManager roleManager = RoleManager.getInstance();
+        int score = 6; // Position initiale dans le scoreboard
+
         for (Role role : Role.values()) {
             if (roleManager.isRoleEnabled(role)) {
-                rolesBuilder.append(role.getName()).append(" ");
+                addLine(objective, "§es " + role.getName(), score); // Ajoute une ligne distincte pour chaque rôle
+                score--; // Décrémenter le score pour la prochaine ligne
             }
         }
-        addLine(objective, rolesBuilder.toString(), 6);
-    }
+            addLine(objective, rolesBuilder.toString(), 6);
+        }
 
     private void addLine(Objective objective, String text, int score) {
         Score line = objective.getScore(text);

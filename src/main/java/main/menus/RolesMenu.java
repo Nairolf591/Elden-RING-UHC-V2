@@ -24,7 +24,7 @@ public class RolesMenu {
         // Bouton pour Le Sans-Éclat
         ItemStack sansEclat = new ItemStack(Material.IRON_SWORD);
         ItemMeta sansEclatMeta = sansEclat.getItemMeta();
-        sansEclatMeta.setDisplayName("§1Le Sans-Éclat");
+        sansEclatMeta.setDisplayName("§aLe Sans-Éclat");
         sansEclatMeta.setLore(Arrays.asList(
                 "§6Camp: " + Camp.BASTION_DE_LA_TABLE_RONDE.getColor() + Camp.BASTION_DE_LA_TABLE_RONDE.getName(),
                 "§7Un humble chevalier sans gloire.",
