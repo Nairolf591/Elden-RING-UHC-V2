@@ -81,4 +81,11 @@ public class GameScoreboard {
     private int getAlivePlayers() {
         return Bukkit.getOnlinePlayers().size(); // Placeholder
     }
+
+    public void updateScoreboard(Player player, int alivePlayers, int currentDay, long time) {        objective.getScore(ChatColor.GREEN + "Joueurs en vie: ").setScore(alivePlayers);
+        objective.getScore(ChatColor.BLUE + "Jour: " + currentDay).setScore(currentDay);
+        objective.getScore(ChatColor.YELLOW + "Temps: " + time).setScore((int) time);
+
+        player.setScoreboard(scoreboard);
+    }
 }

@@ -51,11 +51,18 @@ public class StuffManager {
 
     // Confirmer et sauvegarder le stuff modifié
     public void confirmStuff(Player player) {
-        ItemStack[] modifiedStuff = player.getInventory().getContents();
-        defaultStuff = modifiedStuff; // Sauvegarder le stuff modifié
-        player.getInventory().setContents(playerInventories.get(player)); // Rendre l'ancien inventaire
-        playerInventories.remove(player);
-        player.sendMessage("§aStuff sauvegardé avec succès !");
+        if (playerInventories.containsKey(player)) {
+            // Sauvegarder le nouveau stuff
+            defaultStuff = player.getInventory().getContents();
+
+            // Restaurer l'inventaire d'origine du joueur
+            player.getInventory().setContents(playerInventories.remove(player));
+
+            // Notifier le joueur
+            player.sendMessage("§aLe stuff par défaut a été mis à jour !");
+        } else {
+            player.sendMessage("§cTu n'as pas commencé à modifier le stuff.");
+        }
     }
 
     // Annuler la modification et rendre l'ancien inventaire
@@ -93,29 +100,29 @@ public class StuffManager {
             defaultStuff[6] = new ItemStack(Material.OAK_LOG, 64);
 
             // Casque en fer
-            defaultStuff[39] = new ItemStack(Material.IRON_HELMET);
+            defaultStuff[7] = new ItemStack(Material.IRON_HELMET);
 
             // Plastron en diamant
-            defaultStuff[38] = new ItemStack(Material.DIAMOND_CHESTPLATE);
+            defaultStuff[8] = new ItemStack(Material.DIAMOND_CHESTPLATE);
 
             // Jambières en fer
-            defaultStuff[37] = new ItemStack(Material.IRON_LEGGINGS);
+            defaultStuff[9] = new ItemStack(Material.IRON_LEGGINGS);
 
             // Bottes en diamant
-            defaultStuff[36] = new ItemStack(Material.DIAMOND_BOOTS);
+            defaultStuff[10] = new ItemStack(Material.DIAMOND_BOOTS);
 
             // Pommes d'or (16)
-            defaultStuff[7] = new ItemStack(Material.GOLDEN_APPLE, 16);
+            defaultStuff[11] = new ItemStack(Material.GOLDEN_APPLE, 16);
 
             // Seaux d'eau (2)
-            defaultStuff[8] = new ItemStack(Material.WATER_BUCKET);
-            defaultStuff[9] = new ItemStack(Material.WATER_BUCKET);
+            defaultStuff[12] = new ItemStack(Material.WATER_BUCKET);
+            defaultStuff[13] = new ItemStack(Material.WATER_BUCKET);
 
             // Carottes dorées (64)
-            defaultStuff[10] = new ItemStack(Material.GOLDEN_CARROT, 64);
+            defaultStuff[14] = new ItemStack(Material.GOLDEN_CARROT, 64);
 
             // Remplir les emplacements vides (optionnel)
-            for (int i = 11; i < 36; i++) {
+            for (int i = 1; i < 36; i++) {
                 if (defaultStuff[i] == null) {
                     defaultStuff[i] = new ItemStack(Material.AIR);
                 }

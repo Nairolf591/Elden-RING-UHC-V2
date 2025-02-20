@@ -71,6 +71,7 @@ public final class main extends JavaPlugin implements Listener {
 
         // Exemple : Mettre à jour le scoreboard pour tous les joueurs
         startScoreboardUpdater();
+        scoreboardManager = new EldenRingUHCScoreboard(this);
 
     }
 

@@ -19,7 +19,7 @@ public class MainMenu {
         Inventory menu = Bukkit.createInventory(null, 9, TITLE);
 
         // Bouton Lancer la partie
-        ItemStack startGame = new ItemStack(Material.GREEN_BANNER);
+        ItemStack startGame = new ItemStack(Material.GREEN_WOOL);
         ItemMeta startGameMeta = startGame.getItemMeta();
         startGameMeta.setDisplayName("§a§lLancer la partie");
         startGameMeta.setLore(Arrays.asList("§7Cliquez pour commencer le UHC !"));
