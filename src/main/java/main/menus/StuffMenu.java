@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
 
 public class StuffMenu {
 
@@ -16,11 +19,19 @@ public class StuffMenu {
 
         // Bouton Retour
         ItemStack backButton = new ItemStack(Material.BARRIER);
-        menu.setItem(7, backButton);
+        ItemMeta backButtonMeta = backButton.getItemMeta();
+        backButtonMeta.setDisplayName("§c§lRetour");
+        backButtonMeta.setLore(Arrays.asList("§7Cliquez pour retourner au menu principal."));
+        backButton.setItemMeta(backButtonMeta);
+        menu.setItem(0, backButton);
 
-        // Bouton Modifier
+        // Bouton Modifier le stuff
         ItemStack editButton = new ItemStack(Material.ANVIL);
-        menu.setItem(8, editButton);
+        ItemMeta editButtonMeta = editButton.getItemMeta();
+        editButtonMeta.setDisplayName("§e§lModifier le Stuff");
+        editButtonMeta.setLore(Arrays.asList("§7Cliquez pour modifier le stuff par défaut."));
+        editButton.setItemMeta(editButtonMeta);
+        menu.setItem(4, editButton);
 
         // Ouvrir le menu au joueur
         player.openInventory(menu);

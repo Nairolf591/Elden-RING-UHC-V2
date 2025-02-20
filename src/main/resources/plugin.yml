@@ -10,5 +10,10 @@ commands:
 
   stopuhc:
     description: Permet d'utiliser la commande /stopuhc.
-    usage: /stopUHC
+    usage: /stopuhc
+    permission: op
+
+  confirmstuff:
+    description: Commande pour sauvegarder l'inventaire.
+    usage: /confirmstuff
     permission: op

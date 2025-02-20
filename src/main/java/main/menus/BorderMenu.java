@@ -3,6 +3,7 @@ package main.menus;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,10 @@ public class BorderMenu {
     public static final String TITLE = "§6§lConfigurer la bordure";
 
     public static void open(Player player) {
+        World world = player.getWorld();
+        double borderSize = world.getWorldBorder().getSize();
+        double borderDamage = world.getWorldBorder().getDamageAmount();
+
         // Créer l'inventaire de menu
         Inventory menu = Bukkit.createInventory(null, 9, TITLE);
 
@@ -24,7 +29,15 @@ public class BorderMenu {
         increaseBorderMeta.setDisplayName("§a§lAugmenter la bordure");
         increaseBorderMeta.setLore(Arrays.asList("§7Cliquez pour augmenter la taille de la bordure."));
         increaseBorder.setItemMeta(increaseBorderMeta);
-        menu.setItem(2, increaseBorder);
+        menu.setItem(1, increaseBorder);
+
+        // Item pour afficher la taille actuelle de la bordure
+        ItemStack borderInfo = new ItemStack(Material.BEACON);
+        ItemMeta borderInfoMeta = borderInfo.getItemMeta();
+        borderInfoMeta.setDisplayName("§6§lTaille Actuelle");
+        borderInfoMeta.setLore(Arrays.asList("§7Taille : " + String.format("%.2f", borderSize) + " blocs."));
+        borderInfo.setItemMeta(borderInfoMeta);
+        menu.setItem(2, borderInfo);
 
         // Bouton Réduire la bordure
         ItemStack decreaseBorder = new ItemStack(Material.SPECTRAL_ARROW);
@@ -42,13 +55,13 @@ public class BorderMenu {
         increaseDamage.setItemMeta(increaseDamageMeta);
         menu.setItem(5, increaseDamage);
 
-        // Bouton Réduire les dégâts de la bordure
-        ItemStack decreaseDamage = new ItemStack(Material.FEATHER);
-        ItemMeta decreaseDamageMeta = decreaseDamage.getItemMeta();
-        decreaseDamageMeta.setDisplayName("§f§lRéduire les dégâts");
-        decreaseDamageMeta.setLore(Arrays.asList("§7Cliquez pour réduire les dégâts de la bordure."));
-        decreaseDamage.setItemMeta(decreaseDamageMeta);
-        menu.setItem(6, decreaseDamage);
+        // Item pour afficher les dégâts actuels de la bordure
+        ItemStack damageInfo = new ItemStack(Material.REDSTONE);
+        ItemMeta damageInfoMeta = damageInfo.getItemMeta();
+        damageInfoMeta.setDisplayName("§c§lDégâts Actuels");
+        damageInfoMeta.setLore(Arrays.asList("§7Dégâts : " + String.format("%.2f", borderDamage) + " par seconde."));
+        damageInfo.setItemMeta(damageInfoMeta);
+        menu.setItem(6, damageInfo);
 
         // Bouton Retour au menu principal
         ItemStack backButton = new ItemStack(Material.BARRIER);

@@ -1,5 +1,7 @@
 package main;
 
+import main.game.Role;
+import main.game.RoleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -35,15 +37,24 @@ public class EldenRingUHCScoreboard {
             objective.getScoreboard().resetScores(entry);
         }
 
-        // Titre du scoreboard avec cadre
+        // Titre du scoreboard
         objective.setDisplayName("§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
-        addLine(objective, "§r⛏️ §l§6Elden Ring UHC §r§fV1.1", 10);
+        addLine(objective, "§f⚔️ §lElden Ring UHC §r§fV1.1", 10);
         addLine(objective, "§6▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", 9);
 
         // Informations du scoreboard
-        addLine(objective, "⚔️ §7Joueurs: §f" + Bukkit.getOnlinePlayers().size(), 8);
-        addLine(objective, "👑 §7Hôte: §f" + this.hostName, 7);
-        addLine(objective, "🎭 §7Rôles: §fÀ venir", 6);
+        addLine(objective, "§f👥 Joueurs: §a" + Bukkit.getOnlinePlayers().size(), 8);
+        addLine(objective, "§f👑 Hôte: §c" + this.hostName, 7);
+
+        // Rôles activés
+        StringBuilder rolesBuilder = new StringBuilder("§f🎭 Rôles: §a");
+        RoleManager roleManager = RoleManager.getInstance();
+        for (Role role : Role.values()) {
+            if (roleManager.isRoleEnabled(role)) {
+                rolesBuilder.append(role.getName()).append(" ");
+            }
+        }
+        addLine(objective, rolesBuilder.toString(), 6);
     }
 
     private void addLine(Objective objective, String text, int score) {

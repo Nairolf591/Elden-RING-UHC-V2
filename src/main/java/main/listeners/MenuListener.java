@@ -44,8 +44,7 @@ public class MenuListener implements Listener {
                     RolesMenu.open(player);
                     break;
                 case "§e§lConfigurer le stuff":
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                    player.sendMessage("§eConfiguration du stuff bientôt disponible !");
+                    StuffMenu.open(player); // Ouvrir le menu StuffMenu
                     break;
                 case "§c§lConfiguration Avancée": // Nouveau cas
                     ConfigMenu.open(player); // Ouvrir le menu de configuration avancée
