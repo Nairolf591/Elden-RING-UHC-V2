@@ -1,20 +1,23 @@
 package main;
 
+import main.game.GameManager;
 import main.game.GameScoreboard;
 import main.game.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class ScoreboardManager {
+public class ScoreboardManager implements Listener {
 
     private final GameScoreboard gameScoreboard; // Scoreboard de la partie (Playing)
     private final EldenRingUHCScoreboard menuScoreboard; // Scoreboard du menu (Config/Starting)
 
-    public ScoreboardManager() {
+    public ScoreboardManager(JavaPlugin plugin) {
         this.gameScoreboard = new GameScoreboard();
-        this.menuScoreboard = new EldenRingUHCScoreboard();
+        this.menuScoreboard = new EldenRingUHCScoreboard(plugin);
     }
 
     public void updateScoreboard(Player player, GameState gameState) {
@@ -35,7 +38,11 @@ public class ScoreboardManager {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        GameState currentGameState = getCurrentGameState(); // Récupère l'état actuel du jeu
-        scoreboardManager.updateScoreboard(player, currentGameState);
+        GameState currentGameState = GameManager.getInstance().getCurrentState(); // Récupère l'état actuel du jeu
+        this.updateScoreboard(player, currentGameState);
+    }
+
+    public EldenRingUHCScoreboard getMenuScoreboard() {
+        return this.menuScoreboard;
     }
 }

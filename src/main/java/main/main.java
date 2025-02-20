@@ -21,8 +21,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class main extends JavaPlugin implements Listener {
 
-    private EldenRingUHCScoreboard scoreboardManager; // Utilisation de la classe renommée
+    private EldenRingUHCScoreboard eldenScoreboardManager; // Utilisation de la classe renommée
     private GameScoreboard gameScoreboard; // Déclarer gameScoreboard en tant que champ
+    private ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {
@@ -53,11 +54,11 @@ public final class main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
 
         // Initialiser le gestionnaire de scoreboard
-        scoreboardManager = new EldenRingUHCScoreboard(this);
+        eldenScoreboardManager = new EldenRingUHCScoreboard(this);
         getServer().getPluginManager().registerEvents(new ConfigMenuListener(), this);
 
         // Enregistrer commandes
-        SetHostCommand setHostCommand = new SetHostCommand(scoreboardManager);
+        SetHostCommand setHostCommand = new SetHostCommand(eldenScoreboardManager);
         this.getCommand("sethote").setExecutor(setHostCommand);
         this.getCommand("confirmstuff").setExecutor(new ConfirmStuffCommand());
         this.getCommand("stopuhc").setExecutor(new StopUHCCommand());
@@ -71,7 +72,9 @@ public final class main extends JavaPlugin implements Listener {
 
         // Exemple : Mettre à jour le scoreboard pour tous les joueurs
         startScoreboardUpdater();
-        scoreboardManager = new EldenRingUHCScoreboard(this);
+        eldenScoreboardManager = new EldenRingUHCScoreboard(this);
+        this.scoreboardManager = new ScoreboardManager(this);
+        EldenRingUHCScoreboard menuScoreboard = scoreboardManager.getMenuScoreboard();
 
     }
 
@@ -85,12 +88,12 @@ public final class main extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
 
         // Créer et afficher le scoreboard pour le joueur
-        scoreboardManager.createScoreboard(player);
-        scoreboardManager.updateScoreboard(player);
+        eldenScoreboardManager.createScoreboard(player);
+        eldenScoreboardManager.updateScoreboard(player);
     }
 
     public EldenRingUHCScoreboard getScoreboardManager() {
-        return scoreboardManager;
+        return eldenScoreboardManager;
     }
 
     private void startScoreboardUpdater() {
