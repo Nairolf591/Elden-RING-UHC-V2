@@ -1,16 +1,13 @@
 package main.listeners;
 
 import main.game.*;
-import main.menus.RolesMenu;
-import main.menus.StuffMenu;
+import main.menus.*;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import main.menus.MainMenu;
-import main.menus.BorderMenu;
 
 public class MenuListener implements Listener {
 
@@ -49,6 +46,9 @@ public class MenuListener implements Listener {
                 case "§e§lConfigurer le stuff":
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     player.sendMessage("§eConfiguration du stuff bientôt disponible !");
+                    break;
+                case "§c§lConfiguration Avancée": // Nouveau cas
+                    ConfigMenu.open(player); // Ouvrir le menu de configuration avancée
                     break;
             }
         }

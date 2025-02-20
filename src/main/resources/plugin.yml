@@ -7,3 +7,8 @@ commands:
     description: Définit l'hôte du UHC.
     usage: /sethote <joueur>
     permission: op
+
+  stopuhc:
+    description: Permet d'utiliser la commande /stopuhc.
+    usage: /stopUHC
+    permission: op

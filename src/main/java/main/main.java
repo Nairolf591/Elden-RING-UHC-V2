@@ -2,8 +2,10 @@ package main;
 
 import main.command.ConfirmStuffCommand;
 import main.command.SetHostCommand;
+import main.command.StopUHCCommand;
 import main.game.GameManager;
 import main.game.PlayerManager;
+import main.listeners.ConfigMenuListener;
 import main.listeners.ConfigurationCompassListener;
 import main.listeners.MenuListener;
 import org.bukkit.Bukkit;
@@ -28,7 +30,6 @@ public final class main extends JavaPlugin implements Listener {
             world.setGameRule(GameRule.NATURAL_REGENERATION, false);
         });
 
-        getServer().getPluginManager().registerEvents(new MenuListener(), this);
 
         // Configurer la bordure du monde
         Bukkit.getWorlds().forEach(world -> {
@@ -43,19 +44,25 @@ public final class main extends JavaPlugin implements Listener {
         PlayerManager playerManager = PlayerManager.getInstance();
         GameManager gameManager = GameManager.getInstance();
 
+        //Listeners menus
         Bukkit.getPluginManager().registerEvents(new ConfigurationCompassListener(), this);
+        getServer().getPluginManager().registerEvents(new ConfigMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
 
         // Initialiser le gestionnaire de scoreboard
         scoreboardManager = new EldenRingUHCScoreboard(this);
+        getServer().getPluginManager().registerEvents(new ConfigMenuListener(), this);
 
-        // Enregistrer la commande /sethote
+        // Enregistrer commandes
         SetHostCommand setHostCommand = new SetHostCommand(scoreboardManager);
         this.getCommand("sethote").setExecutor(setHostCommand);
         this.getCommand("confirmstuff").setExecutor(new ConfirmStuffCommand());
+        this.getCommand("stopuhc").setExecutor(new StopUHCCommand());
 
 
         // Enregistrer les événements
         getServer().getPluginManager().registerEvents(this, this);
+
     }
 
     @Override

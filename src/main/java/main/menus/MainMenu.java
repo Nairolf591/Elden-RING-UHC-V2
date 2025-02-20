@@ -50,10 +50,19 @@ public class MainMenu {
         stuffConfig.setItemMeta(stuffConfigMeta);
         menu.setItem(6, stuffConfig);
 
+        // Bouton Configuration Avancée
+        ItemStack advancedConfig = new ItemStack(Material.REDSTONE);
+        ItemMeta advancedConfigMeta = advancedConfig.getItemMeta();
+        advancedConfigMeta.setDisplayName("§c§lConfiguration Avancée");
+        advancedConfigMeta.setLore(Arrays.asList("§7Cliquez pour ouvrir le menu de configuration avancée."));
+        advancedConfig.setItemMeta(advancedConfigMeta);
+        menu.setItem(8, advancedConfig);
+
         // Ouvrir le menu au joueur
         player.openInventory(menu);
 
         // Jouer un son
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
     }
+
 }
