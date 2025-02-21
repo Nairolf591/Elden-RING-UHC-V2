@@ -1,6 +1,7 @@
 package main.listeners;
 
 import main.menus.BonusSkillMenu;
+import main.role.Morgott;
 import main.skills.*;
 import main.menus.ClassSelectionMenu;
 import org.bukkit.ChatColor;
@@ -83,6 +84,18 @@ public class SkillListener implements Listener {
 
             // Ouvre le menu de sélection des compétences bonus
             BonusSkillMenu.open(player);
+        }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (item != null && item.getType() == Material.DIAMOND_SWORD && item.hasItemMeta() &&
+                item.getItemMeta().getDisplayName().equals("§4Lame Maudite de Morgott")) {
+                Morgott.useLameMaudite(player);
+            }
+        }
+
+// Ajouter un nouvel item pour Courroux de l'Omen si nécessaire
+        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() &&
+                item.getItemMeta().getDisplayName().equals("§4Courroux de l'Omen")) {
+            Morgott.useCourrouxOmen(player);
         }
     }
 

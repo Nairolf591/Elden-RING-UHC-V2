@@ -23,7 +23,9 @@ public class PlayerManager {
 
     // Ajouter un joueur
     public void addPlayer(Player player) {
-        playerDataMap.put(player, new PlayerData(player));
+        if (playerDataMap.get(player) == null) { // Vérifie si le joueur n'est pas déjà enregistré
+            playerDataMap.put(player, new PlayerData(player)); // Crée une nouvelle instance de PlayerData
+        }
     }
 
     // Assigner un camp à un joueur
@@ -57,5 +59,9 @@ public class PlayerManager {
     // Supprimer un joueur (quand il quitte la partie)
     public void removePlayer(Player player) {
         playerDataMap.remove(player);
+    }
+
+    public PlayerData getPlayerData(Player player) {
+        return playerDataMap.get(player);
     }
 }

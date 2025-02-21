@@ -2,6 +2,7 @@ package main.game;
 
 import main.main;
 import main.ScoreboardManager;
+import main.role.Morgott;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -126,6 +127,10 @@ public class GameManager {
                         bonusStar.setItemMeta(bonusMeta);
 
                         player.getInventory().addItem(classStar, bonusStar); // Donner les deux Nether Stars
+                    }
+
+                    if (role == Role.MORGOTT) {
+                        Morgott.applyMorgott(player);
                     }
                 }
             }

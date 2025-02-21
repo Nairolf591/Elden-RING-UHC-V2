@@ -92,10 +92,9 @@ public final class main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        GameState currentGameState = GameManager.getInstance().getCurrentState(); // Récupérer l'état actuel du jeu
-        getLogger().info("État du jeu lors de la connexion : " + currentGameState); // Debug
-        main.getInstance().getScoreboardManager().updateScoreboard(player, currentGameState); // Mettre à jour le scoreboard
+        PlayerManager.getInstance().addPlayer(player); // Initialise les données du joueur
     }
+
 
     public ScoreboardManager getScoreboardManager() { // Retourne un ScoreboardManager
         return scoreboardManager;
