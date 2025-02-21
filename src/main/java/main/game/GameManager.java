@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Arrays;
+
 import static org.bukkit.Bukkit.getLogger;
 
 
@@ -76,27 +78,55 @@ public class GameManager {
         PlayerManager playerManager = PlayerManager.getInstance();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            // Assigner un rôle actif au joueur
             for (Role role : Role.values()) {
                 if (roleManager.isRoleEnabled(role)) {
                     playerManager.setPlayerRole(player, role);
+                    // Récupère le rôle du joueur
 
-                    // Si le rôle est "Sans-Éclats", donner la Nether Star pour la classe et la compétence bonus
+                    // Si le rôle est "Sans-Éclats", donner les Nether Stars
                     if (role == Role.SANS_ECLAT) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f); // Son de niveau up
+                        player.sendMessage(ChatColor.GOLD + "╔══════════════════════════════════════════╗");
+                        player.sendMessage(ChatColor.GOLD + "║               §eVous êtes §6Le Sans-Éclat §e!                           ║");
+                        player.sendMessage(ChatColor.GOLD + "╠══════════════════════════════════════════╣");
+                        player.sendMessage(ChatColor.GRAY + " Camp : " + ChatColor.BLUE + "Bastion de la Table Ronde");
+                        player.sendMessage(ChatColor.GRAY + " Description : Un humble chevalier sans gloire, mais au cœur pur.");
+                        player.sendMessage(ChatColor.GRAY + " Pouvoirs :");
+                        player.sendMessage(ChatColor.GRAY + " - §7Vous avez accès à 3 classes uniques, chacune avec");
+                        player.sendMessage(ChatColor.GRAY + "   son arme et sa propre §3Cendre de Guerre§7.");
+                        player.sendMessage(ChatColor.GRAY + " - §7Vous pouvez également choisir parmi 3 §cSorts Bonus§7.");
+                        player.sendMessage(ChatColor.GRAY + " Sections disponibles :");
+                        player.sendMessage(ChatColor.GRAY + " - §aClasse : §70/1 choisi. §7Choisissez une classe avec la §a§lNether Star§7.");
+                        player.sendMessage(ChatColor.GRAY + " - §cSort Bonus : §70/1 choisi. §7Choisissez un sort avec la §a§lNether Star§7.");
+                        player.sendMessage(ChatColor.GOLD + "╚══════════════════════════════════════════╝");
+
+                        // Donner les Nether Stars
                         ItemStack classStar = new ItemStack(Material.NETHER_STAR);
                         ItemMeta classMeta = classStar.getItemMeta();
                         classMeta.setDisplayName("§a§lChoisir votre classe");
+                        classMeta.setLore(Arrays.asList(
+                                "§7Cliquez pour ouvrir le menu des classes.",
+                                "§7Choix disponibles :",
+                                "§6Grand Espadon §7(Force, dégâts élevés)",
+                                "§eNagakiba §7(Vitesse, téléportation)",
+                                "§dBâton d'éclat de Lusat §7(Sorts, régénération de Mana)"
+                        ));
                         classStar.setItemMeta(classMeta);
 
                         ItemStack bonusStar = new ItemStack(Material.NETHER_STAR);
                         ItemMeta bonusMeta = bonusStar.getItemMeta();
                         bonusMeta.setDisplayName("§a§lCompétence bonus");
+                        bonusMeta.setLore(Arrays.asList(
+                                "§7Cliquez pour ouvrir le menu des sorts bonus.",
+                                "§7Choix disponibles :",
+                                "§4Flamme noire §7(Feu, faiblesse)",
+                                "§eVague de lames §7(Dégâts de zone)",
+                                "§bTempête de givre §7(Lenteur, gel)"
+                        ));
                         bonusStar.setItemMeta(bonusMeta);
 
                         player.getInventory().addItem(classStar, bonusStar); // Donner les deux Nether Stars
                     }
-
-                    break; // Assigner un seul rôle par joueur
                 }
             }
         }

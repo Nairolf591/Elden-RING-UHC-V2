@@ -44,7 +44,7 @@ public class GameScoreboard {
         addLine("§f🌙 " + dayPhase + ": §a" + timeUntil, 6);
         addLine("§7§m--------------------------", 5);
         int mana = ManaManager.getInstance().getMana(player);
-        addLine("§fMana: §b" + mana, 5);
+        addLine("§fMana: §b" + mana, 4); // Affiche le Mana du joueur
 
         // Appliquer le scoreboard au joueur
         player.setScoreboard(scoreboard);
