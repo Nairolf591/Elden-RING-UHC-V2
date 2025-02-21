@@ -35,12 +35,20 @@ public class SkillListener implements Listener {
             }
         }
 
+        // Vérifie si l'item est une Nether Star de sélection de classe
+        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() &&
+                item.getItemMeta().getDisplayName().equals("§a§lChoisir votre classe")) {
+            event.setCancelled(true);
+            ClassSelectionMenu.open(player); // Ouvrir le menu de sélection de classe
+        }
+
         // Vérifie si l'item est une Nether Star de compétence bonus
         if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta()) {
             String skillName = item.getItemMeta().getDisplayName();
 
+            long remaining = SkillManager.getInstance().getCooldownRemaining(player);
             if (SkillManager.getInstance().isOnCooldown(player)) {
-                player.sendMessage(ChatColor.RED + "Compétence en cooldown !");
+                player.sendMessage(ChatColor.RED + "Compétence en cooldown ! Temps restant : " + (remaining / 1000) + " secondes.");
                 return;
             }
 
@@ -171,14 +179,39 @@ public class SkillListener implements Listener {
      * Donne une Nether Star renommée pour utiliser la compétence bonus choisie.
      */
     private void giveBonusSkillItem(Player player, String skillName) {
-        // Crée la Nether Star de compétence bonus
         ItemStack skillItem = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = skillItem.getItemMeta();
         meta.setDisplayName(skillName);
-        meta.setLore(Arrays.asList("§7Cliquez pour utiliser cette compétence bonus."));
-        skillItem.setItemMeta(meta);
 
-        // Donne l'item au joueur
+        // Ajouter des informations sur la compétence
+        switch (skillName) {
+            case "§4Flamme noire":
+                meta.setLore(Arrays.asList(
+                        "§7Applique un effet de faiblesse et met les ennemis en feu.",
+                        "§bCoût : 60 Mana",
+                        "§cDurée : 2 secondes",
+                        "§aCliquez pour activer."
+                ));
+                break;
+            case "§eVague de lames":
+                meta.setLore(Arrays.asList(
+                        "§7Inflige des dégâts dans une zone.",
+                        "§bCoût : 50 Mana",
+                        "§cDégâts : 2 cœurs (4 points)",
+                        "§aCliquez pour activer."
+                ));
+                break;
+            case "§bTempête de givre":
+                meta.setLore(Arrays.asList(
+                        "§7Applique un effet de lenteur aux ennemis.",
+                        "§bCoût : 70 Mana",
+                        "§cDurée : 5 secondes",
+                        "§aCliquez pour activer."
+                ));
+                break;
+        }
+
+        skillItem.setItemMeta(meta);
         player.getInventory().addItem(skillItem);
         player.sendMessage("§aVous avez choisi la compétence bonus : " + skillName);
     }

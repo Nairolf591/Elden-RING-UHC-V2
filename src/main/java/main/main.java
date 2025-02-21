@@ -8,6 +8,7 @@ import main.listeners.ConfigMenuListener;
 import main.listeners.ConfigurationCompassListener;
 import main.listeners.MenuListener;
 import main.listeners.SkillListener;
+import main.skills.SkillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
@@ -78,6 +79,7 @@ public final class main extends JavaPlugin implements Listener {
 
         Bukkit.getPluginManager().registerEvents(new SkillListener(), this);
         ManaManager.getInstance().startManaRegeneration(this);
+        SkillManager.getInstance().startCooldownChecker(this);
 
         getLogger().info("Elden Ring UHC Activé !");
     }

@@ -19,7 +19,12 @@ public class ClassSelectionMenu {
         ItemStack grandEspadon = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta espadonMeta = grandEspadon.getItemMeta();
         espadonMeta.setDisplayName("§6Grand Espadon");
-        espadonMeta.setLore(Arrays.asList("§7Cendre de guerre : Griffe du Lion", "§aEffet : Force niveau 1"));
+        espadonMeta.setLore(Arrays.asList(
+                "§7Cendre de guerre : Griffe du Lion",
+                "§bCoût : 70 Mana",
+                "§cDégâts : 3 cœurs (6 points)",
+                "§aEffet : Force niveau 1"
+        ));
         grandEspadon.setItemMeta(espadonMeta);
         menu.setItem(1, grandEspadon);
 
@@ -27,7 +32,12 @@ public class ClassSelectionMenu {
         ItemStack nagakiba = new ItemStack(Material.IRON_SWORD);
         ItemMeta nagakibaMeta = nagakiba.getItemMeta();
         nagakibaMeta.setDisplayName("§eNagakiba");
-        nagakibaMeta.setLore(Arrays.asList("§7Cendre de guerre : Lame furtive", "§aEffet : Vitesse constante"));
+        nagakibaMeta.setLore(Arrays.asList(
+                "§7Cendre de guerre : Lame furtive",
+                "§bCoût : 50 Mana",
+                "§aEffet : Vitesse constante",
+                "§dTéléporte derrière l'ennemi"
+        ));
         nagakiba.setItemMeta(nagakibaMeta);
         menu.setItem(3, nagakiba);
 
@@ -35,7 +45,12 @@ public class ClassSelectionMenu {
         ItemStack batonLusat = new ItemStack(Material.STICK);
         ItemMeta batonMeta = batonLusat.getItemMeta();
         batonMeta.setDisplayName("§dBâton d'éclat de Lusat");
-        batonMeta.setLore(Arrays.asList("§7Sort : Explosion stellaire", "§aEffet : Régénération de Mana augmentée"));
+        batonMeta.setLore(Arrays.asList(
+                "§7Sort : Explosion stellaire",
+                "§bCoût : 80 Mana",
+                "§cExplosion visuelle sans dégâts",
+                "§aEffet : Régénération de Mana augmentée"
+        ));
         batonLusat.setItemMeta(batonMeta);
         menu.setItem(5, batonLusat);
 
