@@ -3,9 +3,11 @@ package main.listeners;
 import main.menus.BonusSkillMenu;
 import main.skills.*;
 import main.menus.ClassSelectionMenu;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -21,11 +23,29 @@ public class SkillListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
+        // Vérifie si l'action est un clic droit
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            // Vérifie si l'item est une arme de classe
+            if (item != null && item.getType().toString().contains("_SWORD")) {
+                PlayerClass playerClass = SkillManager.getInstance().getPlayerClass(player);
+                if (playerClass != null) {
+                    event.setCancelled(true); // Empêcher l'utilisation normale de l'item
+                    playerClass.useSkill(player); // Utiliser la cendre de guerre
+                }
+            }
+        }
+
         // Vérifie si l'item est la Nether Star de sélection de classe
         if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() &&
                 item.getItemMeta().getDisplayName().equals("§a§lChoisir votre classe")) {
             event.setCancelled(true);
             ClassSelectionMenu.open(player); // Ouvrir le menu de sélection de classe
+
+            // Vérifie si le joueur a déjà une classe
+            if (SkillManager.getInstance().getPlayerClass(player) != null) {
+                player.sendMessage(ChatColor.RED + "Vous avez déjà choisi une classe !");
+                return;
+            }
         }
 
         // Vérifie si l'item est la Nether Star de compétence bonus

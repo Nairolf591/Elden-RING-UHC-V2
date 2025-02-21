@@ -46,6 +46,7 @@ public class GrandEspadon extends PlayerClass {
         ItemMeta meta = sword.getItemMeta();
         meta.setDisplayName("§6Grand Espadon");
         meta.setLore(Arrays.asList("§7Cendre de guerre : Griffe du Lion"));
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.DAMAGE_ALL, 3, true); // Sharpness 3
         sword.setItemMeta(meta);
         return sword;
     }

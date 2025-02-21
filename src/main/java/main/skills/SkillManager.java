@@ -1,6 +1,7 @@
 // Nouveau fichier src/main/java/main/skills/SkillManager.java
 package main.skills;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,10 @@ public class SkillManager implements Listener {
     }
 
     public void assignClass(Player player, PlayerClass playerClass) {
+        if (playerClasses.containsKey(player)) {
+            player.sendMessage(ChatColor.RED + "Vous avez déjà choisi une classe !");
+            return;
+        }
         playerClasses.put(player, playerClass);
         playerClass.applyClass(player);
     }

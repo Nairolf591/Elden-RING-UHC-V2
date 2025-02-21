@@ -42,10 +42,11 @@ public class Nagakiba extends PlayerClass {
 
     @Override
     public ItemStack getClassItem() {
-        ItemStack sword = new ItemStack(Material.IRON_SWORD);
+        ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta meta = sword.getItemMeta();
         meta.setDisplayName("§eNagakiba");
         meta.setLore(Arrays.asList("§7Cendre de guerre : Lame furtive"));
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.DAMAGE_ALL, 3, true); // Sharpness 3
         sword.setItemMeta(meta);
         return sword;
     }

@@ -23,11 +23,10 @@ public class BatonEclatLusat extends PlayerClass {
 
     @Override
     public void useSkill(Player player) {
-        // Sort : Explosion stellaire
         if (ManaManager.getInstance().getMana(player) >= 80) {
             ManaManager.getInstance().consumeMana(player, 80);
-            // Explosion qui inflige des dégâts
-            player.getWorld().createExplosion(player.getLocation(), 3, false);
+            // Créer une explosion qui n'affecte pas le joueur
+            player.getWorld().createExplosion(player.getLocation(), 3, false, false); // Le dernier paramètre `false` empêche les dégâts aux entités
             // Effets visuels et sonores
             player.getWorld().spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 50, 1, 1, 1, 0.1);
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
@@ -38,11 +37,12 @@ public class BatonEclatLusat extends PlayerClass {
 
     @Override
     public ItemStack getClassItem() {
-        ItemStack stick = new ItemStack(Material.STICK);
-        ItemMeta meta = stick.getItemMeta();
+        ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta meta = sword.getItemMeta();
         meta.setDisplayName("§dBâton d'éclat de Lusat");
         meta.setLore(Arrays.asList("§7Sort : Explosion stellaire"));
-        stick.setItemMeta(meta);
-        return stick;
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.DAMAGE_ALL, 3, true); // Sharpness 3
+        sword.setItemMeta(meta);
+        return sword;
     }
 }

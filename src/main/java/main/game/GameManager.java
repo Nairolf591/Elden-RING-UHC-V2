@@ -81,13 +81,19 @@ public class GameManager {
                 if (roleManager.isRoleEnabled(role)) {
                     playerManager.setPlayerRole(player, role);
 
-                    // Si le rôle est "Sans-Éclats", donner la Nether Star
+                    // Si le rôle est "Sans-Éclats", donner la Nether Star pour la classe et la compétence bonus
                     if (role == Role.SANS_ECLAT) {
-                        ItemStack netherStar = new ItemStack(Material.NETHER_STAR);
-                        ItemMeta meta = netherStar.getItemMeta();
-                        meta.setDisplayName("§a§lChoisir votre classe");
-                        netherStar.setItemMeta(meta);
-                        player.getInventory().addItem(netherStar);
+                        ItemStack classStar = new ItemStack(Material.NETHER_STAR);
+                        ItemMeta classMeta = classStar.getItemMeta();
+                        classMeta.setDisplayName("§a§lChoisir votre classe");
+                        classStar.setItemMeta(classMeta);
+
+                        ItemStack bonusStar = new ItemStack(Material.NETHER_STAR);
+                        ItemMeta bonusMeta = bonusStar.getItemMeta();
+                        bonusMeta.setDisplayName("§a§lCompétence bonus");
+                        bonusStar.setItemMeta(bonusMeta);
+
+                        player.getInventory().addItem(classStar, bonusStar); // Donner les deux Nether Stars
                     }
 
                     break; // Assigner un seul rôle par joueur
