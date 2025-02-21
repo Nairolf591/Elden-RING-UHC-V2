@@ -43,6 +43,8 @@ public class GameScoreboard {
         addLine("§f☀️ Jour actuel: §a" + getCurrentDay(world), 7);
         addLine("§f🌙 " + dayPhase + ": §a" + timeUntil, 6);
         addLine("§7§m--------------------------", 5);
+        int mana = ManaManager.getInstance().getMana(player);
+        addLine("§fMana: §b" + mana, 5);
 
         // Appliquer le scoreboard au joueur
         player.setScoreboard(scoreboard);

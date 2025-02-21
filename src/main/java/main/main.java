@@ -3,13 +3,11 @@ package main;
 import main.command.ConfirmStuffCommand;
 import main.command.SetHostCommand;
 import main.command.StopUHCCommand;
-import main.game.GameManager;
-import main.game.GameScoreboard;
-import main.game.GameState;
-import main.game.PlayerManager;
+import main.game.*;
 import main.listeners.ConfigMenuListener;
 import main.listeners.ConfigurationCompassListener;
 import main.listeners.MenuListener;
+import main.listeners.SkillListener;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.WorldBorder;
@@ -77,6 +75,9 @@ public final class main extends JavaPlugin implements Listener {
         this.scoreboardManager = new ScoreboardManager(this);
 
         instance = this; // Initialiser l'instance
+
+        Bukkit.getPluginManager().registerEvents(new SkillListener(), this);
+        ManaManager.getInstance().startManaRegeneration(this);
 
         getLogger().info("Elden Ring UHC Activé !");
     }

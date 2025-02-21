@@ -2,6 +2,8 @@ package main.game;
 
 import main.main;
 import main.ScoreboardManager;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -78,6 +80,16 @@ public class GameManager {
             for (Role role : Role.values()) {
                 if (roleManager.isRoleEnabled(role)) {
                     playerManager.setPlayerRole(player, role);
+
+                    // Si le rôle est "Sans-Éclats", donner la Nether Star
+                    if (role == Role.SANS_ECLAT) {
+                        ItemStack netherStar = new ItemStack(Material.NETHER_STAR);
+                        ItemMeta meta = netherStar.getItemMeta();
+                        meta.setDisplayName("§a§lChoisir votre classe");
+                        netherStar.setItemMeta(meta);
+                        player.getInventory().addItem(netherStar);
+                    }
+
                     break; // Assigner un seul rôle par joueur
                 }
             }
