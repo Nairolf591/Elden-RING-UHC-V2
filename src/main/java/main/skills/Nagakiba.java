@@ -1,13 +1,18 @@
 package main.skills;
 
+import main.main;
 import main.game.ManaManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
@@ -21,23 +26,44 @@ public class Nagakiba extends PlayerClass {
         player.getInventory().addItem(getClassItem());
     }
 
-    @Override
     public void useSkill(Player player) {
         if (ManaManager.getInstance().getMana(player) >= 50) {
             ManaManager.getInstance().consumeMana(player, 50);
-            // Téléporte le joueur derrière l'ennemi
+
+            // Téléportation derrière l'ennemi
             player.getWorld().getNearbyEntities(player.getLocation(), 5, 5, 5).forEach(entity -> {
-                if (entity instanceof Player) {
-                    player.teleport(entity.getLocation().add(entity.getLocation().getDirection().multiply(-2)));
+                if (entity instanceof Player && !entity.equals(player)) {
+                    Location behindTarget = entity.getLocation().add(entity.getLocation().getDirection().multiply(-2));
+                    player.teleport(behindTarget);
+
+                    // Effet de flou avec des clones
+                    for (int i = 0; i < 3; i++) {
+                        ArmorStand clone = player.getWorld().spawn(behindTarget, ArmorStand.class);
+                        clone.setVisible(false);
+                        clone.setGravity(false);
+                        clone.setSmall(true);
+                        clone.setArms(true);
+                        clone.setItemInHand(new ItemStack(Material.IRON_SWORD));
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                clone.remove();
+                            }
+                        }.runTaskLater(Bukkit.getPluginManager().getPlugin("EldenRingUHC"), 20L); // Supprime le clone après 1 seconde
+                    }
                 }
             });
-            // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, player.getLocation(), 100, 2, 2, 2, 0.2); // Plus de particules
+
+            // Particules et son pour la téléportation
+            player.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, player.getLocation(), 50, 1, 1, 1, 0.1);
+            player.getWorld().spawnParticle(org.bukkit.Particle.SMOKE_LARGE, player.getLocation(), 30, 1, 1, 1, 0.1);
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 
 
     @Override

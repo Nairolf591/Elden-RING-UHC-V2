@@ -110,6 +110,7 @@ public final class main extends JavaPlugin implements Listener {
             }
         }, 0L, 20L); // Exécuter toutes les secondes (20 ticks = 1 seconde)
     }
+
     public static main getInstance() {
         return instance;
     }
