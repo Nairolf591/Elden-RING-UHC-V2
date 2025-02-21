@@ -39,17 +39,25 @@ public class SkillListener implements Listener {
         if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta()) {
             String skillName = item.getItemMeta().getDisplayName();
 
+            if (SkillManager.getInstance().isOnCooldown(player)) {
+                player.sendMessage(ChatColor.RED + "Compétence en cooldown !");
+                return;
+            }
+
             switch (skillName) {
                 case "§4Flamme noire":
                     new FlammeNoire().useSkill(player);
+                    SkillManager.getInstance().setCooldown(player); // Définir le cooldown
                     break;
 
                 case "§eVague de lames":
                     new VagueDeLames().useSkill(player);
+                    SkillManager.getInstance().setCooldown(player); // Définir le cooldown
                     break;
 
                 case "§bTempête de givre":
                     new TempeteDeGivre().useSkill(player);
+                    SkillManager.getInstance().setCooldown(player); // Définir le cooldown
                     break;
             }
         }
