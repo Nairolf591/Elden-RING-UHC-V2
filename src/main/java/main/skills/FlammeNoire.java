@@ -18,10 +18,12 @@ public class FlammeNoire {
                 }
             });
             // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.SMOKE_LARGE, player.getLocation(), 30, 1, 1, 1, 0.1);
+            player.getWorld().spawnParticle(org.bukkit.Particle.SMOKE_LARGE, player.getLocation(), 50, 2, 2, 2, 0.1); // Plus de fumée
+            player.getWorld().spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 50, 2, 2, 2, 0.1); // Ajout de flammes
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_BLAZE_SHOOT, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 }

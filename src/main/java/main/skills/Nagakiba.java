@@ -23,7 +23,6 @@ public class Nagakiba extends PlayerClass {
 
     @Override
     public void useSkill(Player player) {
-        // Cendre de guerre : Lame furtive
         if (ManaManager.getInstance().getMana(player) >= 50) {
             ManaManager.getInstance().consumeMana(player, 50);
             // Téléporte le joueur derrière l'ennemi
@@ -33,12 +32,13 @@ public class Nagakiba extends PlayerClass {
                 }
             });
             // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, player.getLocation(), 30, 1, 1, 1, 0.1);
+            player.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, player.getLocation(), 100, 2, 2, 2, 0.2); // Plus de particules
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 
     @Override
     public ItemStack getClassItem() {

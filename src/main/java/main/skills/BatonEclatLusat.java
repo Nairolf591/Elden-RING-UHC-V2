@@ -25,15 +25,15 @@ public class BatonEclatLusat extends PlayerClass {
     public void useSkill(Player player) {
         if (ManaManager.getInstance().getMana(player) >= 80) {
             ManaManager.getInstance().consumeMana(player, 80);
-            // Créer une explosion qui n'affecte pas le joueur
-            player.getWorld().createExplosion(player.getLocation(), 3, false, false); // Le dernier paramètre `false` empêche les dégâts aux entités
-            // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 50, 1, 1, 1, 0.1);
+            // Créer une explosion visuelle sans dégâts
+            player.getWorld().spawnParticle(org.bukkit.Particle.EXPLOSION_HUGE, player.getLocation(), 1); // Grosse explosion
+            player.getWorld().spawnParticle(org.bukkit.Particle.FLAME, player.getLocation(), 100, 2, 2, 2, 0.1); // Flux de flammes
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 
     @Override
     public ItemStack getClassItem() {

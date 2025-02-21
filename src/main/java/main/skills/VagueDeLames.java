@@ -16,10 +16,12 @@ public class VagueDeLames {
                 }
             });
             // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.FIREWORKS_SPARK, player.getLocation(), 30, 1, 1, 1, 0.1);
+            player.getWorld().spawnParticle(org.bukkit.Particle.SWEEP_ATTACK, player.getLocation(), 50, 2, 2, 2, 0.1); // Particules de coupure
+            player.getWorld().spawnParticle(org.bukkit.Particle.CRIT, player.getLocation(), 50, 2, 2, 2, 0.1); // Particules de dégâts
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 }

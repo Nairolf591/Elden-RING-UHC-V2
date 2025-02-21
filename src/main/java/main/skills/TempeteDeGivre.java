@@ -18,10 +18,12 @@ public class TempeteDeGivre {
                 }
             });
             // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.SNOW_SHOVEL, player.getLocation(), 30, 1, 1, 1, 0.1);
+            player.getWorld().spawnParticle(org.bukkit.Particle.SNOW_SHOVEL, player.getLocation(), 100, 2, 2, 2, 0.1); // Plus de neige
+            player.getWorld().spawnParticle(org.bukkit.Particle.SNOWBALL, player.getLocation(), 50, 2, 2, 2, 0.1); // Ajout de boules de neige
             player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_SNOW_GOLEM_SHOOT, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }
     }
+
 }

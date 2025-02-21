@@ -23,18 +23,17 @@ public class GrandEspadon extends PlayerClass {
 
     @Override
     public void useSkill(Player player) {
-        // Cendre de guerre : Griffe du Lion
         if (ManaManager.getInstance().getMana(player) >= 70) {
             ManaManager.getInstance().consumeMana(player, 70);
-            // Inflige 3 cœurs de dégâts à l'ennemi ciblé
+            // Inflige 3 cœurs de dégâts aux ennemis dans une zone
             player.getWorld().getNearbyEntities(player.getLocation(), 5, 5, 5).forEach(entity -> {
-                if (entity instanceof Player) {
+                if (entity instanceof Player && !entity.equals(player)) {
                     ((Player) entity).damage(6, player); // 6 dégâts = 3 cœurs
                 }
             });
             // Effets visuels et sonores
-            player.getWorld().spawnParticle(org.bukkit.Particle.CRIT, player.getLocation(), 30, 1, 1, 1, 0.1);
-            player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+            player.getWorld().spawnParticle(org.bukkit.Particle.CRIT_MAGIC, player.getLocation(), 100, 2, 2, 2, 0.5); // Plus de particules
+            player.getWorld().playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.0f);
         } else {
             player.sendMessage(ChatColor.RED + "Pas assez de Mana !");
         }

@@ -35,16 +35,22 @@ public class SkillListener implements Listener {
             }
         }
 
-        // Vérifie si l'item est la Nether Star de sélection de classe
-        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() &&
-                item.getItemMeta().getDisplayName().equals("§a§lChoisir votre classe")) {
-            event.setCancelled(true);
-            ClassSelectionMenu.open(player); // Ouvrir le menu de sélection de classe
+        // Vérifie si l'item est une Nether Star de compétence bonus
+        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta()) {
+            String skillName = item.getItemMeta().getDisplayName();
 
-            // Vérifie si le joueur a déjà une classe
-            if (SkillManager.getInstance().getPlayerClass(player) != null) {
-                player.sendMessage(ChatColor.RED + "Vous avez déjà choisi une classe !");
-                return;
+            switch (skillName) {
+                case "§4Flamme noire":
+                    new FlammeNoire().useSkill(player);
+                    break;
+
+                case "§eVague de lames":
+                    new VagueDeLames().useSkill(player);
+                    break;
+
+                case "§bTempête de givre":
+                    new TempeteDeGivre().useSkill(player);
+                    break;
             }
         }
 
@@ -66,7 +72,6 @@ public class SkillListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        // Gestion du menu de sélection de classe
         if (event.getView().getTitle().equals("§6§lChoisissez votre classe")) {
             event.setCancelled(true); // Empêcher le joueur de prendre les items
             Player player = (Player) event.getWhoClicked();
@@ -75,6 +80,12 @@ public class SkillListener implements Listener {
             if (clickedItem == null || !clickedItem.hasItemMeta()) return;
 
             String itemName = clickedItem.getItemMeta().getDisplayName();
+
+            // Vérifier si le joueur a déjà une classe
+            if (SkillManager.getInstance().getPlayerClass(player) != null) {
+                player.sendMessage(ChatColor.RED + "Vous avez déjà choisi une classe !");
+                return;
+            }
 
             switch (itemName) {
                 case "§6Grand Espadon":
