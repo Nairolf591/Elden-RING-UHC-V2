@@ -16,7 +16,7 @@ public class BorderMenu {
     public static final String TITLE = "§6§lConfigurer la bordure";
 
     public static void open(Player player) {
-        World world = player.getWorld();
+        World world =  Bukkit.getWorld("UHC");
         double borderSize = world.getWorldBorder().getSize();
         double borderDamage = world.getWorldBorder().getDamageAmount();
 

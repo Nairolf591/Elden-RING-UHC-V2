@@ -54,7 +54,6 @@ public class BossManager implements Listener {
     }
 
 
-
     private void startBossSpawner() {
         // Nombre aléatoire de boss entre 1 et 10
         int numberOfBosses = random.nextInt(10) + 1;
@@ -82,10 +81,14 @@ public class BossManager implements Listener {
     }
 
     private void spawnBoss() {
-        int borderSize = (int) Bukkit.getWorld("world").getWorldBorder().getSize();
+        int borderSize = (int) Bukkit.getWorld("UHC").getWorldBorder().getSize();
         int x = random.nextInt(borderSize * 2) - borderSize;
         int z = random.nextInt(borderSize * 2) - borderSize;
-        Location spawnLocation = new Location(Bukkit.getWorld("world"), x, 100, z);
+        Location spawnLocation = new Location(Bukkit.getWorld("UHC"), x, 100, z);
+
+        // Calcul de la distance par rapport à (0, 0)
+        double distance = spawnLocation.distance(new Location(spawnLocation.getWorld(), 0, 100, 0));
+        String distanceRange = getDistanceRange(distance); // Obtenir la plage de distance
 
         // Choix aléatoire d'un boss parmi plusieurs types
         int bossType = random.nextInt(3); // 0, 1 ou 2
@@ -97,7 +100,8 @@ public class BossManager implements Listener {
                 boss.setCustomName("Chevalier du creset");
                 boss.setMaxHealth(50);
                 boss.setHealth(50);
-                boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0));
                 break;
             case 1:
                 boss = (LivingEntity) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SKELETON);
@@ -111,13 +115,15 @@ public class BossManager implements Listener {
                 boss.setCustomName("Légionnaire de l'ombre");
                 boss.setMaxHealth(60);
                 boss.setHealth(60);
-                boss.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 1));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0));
                 break;
             default:
                 boss = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
                 boss.setCustomName("Chevalier du creset");
                 boss.setMaxHealth(50);
                 boss.setHealth(50);
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0));
                 break;
         }
 
@@ -126,7 +132,7 @@ public class BossManager implements Listener {
         // Affichage des coordonnées de spawn dans la console
         plugin.getLogger().info("Un boss est apparu aux coordonnées : X=" + x + ", Z=" + z);
 
-        Bukkit.broadcastMessage("§6Un boss est apparu !");
+        Bukkit.broadcastMessage("§6Un boss est apparu " + distanceRange + " du 0 0 !");
     }
 
     @EventHandler
@@ -186,6 +192,22 @@ public class BossManager implements Listener {
             meta.setLore(List.of(lore));
             item.setItemMeta(meta);
             return item;
+        }
+    }
+
+    private String getDistanceRange(double distance) {
+        if (distance < 100) {
+            return "à moins de 100 blocs";
+        } else if (distance < 200) {
+            return "entre 100 et 200 blocs";
+        } else if (distance < 300) {
+            return "entre 200 et 300 blocs";
+        } else if (distance < 400) {
+            return "entre 300 et 400 blocs";
+        } else if (distance < 500) {
+            return "entre 400 et 500 blocs";
+        } else {
+            return "à plus de 500 blocs";
         }
     }
 }
