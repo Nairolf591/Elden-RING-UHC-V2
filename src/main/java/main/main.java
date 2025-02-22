@@ -4,10 +4,7 @@ import main.command.ConfirmStuffCommand;
 import main.command.SetHostCommand;
 import main.command.StopUHCCommand;
 import main.game.*;
-import main.listeners.ConfigMenuListener;
-import main.listeners.ConfigurationCompassListener;
-import main.listeners.MenuListener;
-import main.listeners.SkillListener;
+import main.listeners.*;
 import main.skills.SkillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -80,6 +77,10 @@ public final class main extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new SkillListener(), this);
         ManaManager.getInstance().startManaRegeneration(this);
         SkillManager.getInstance().startCooldownChecker(this);
+        new BossManager(this);
+        TalismanEffects talismanEffects = new TalismanEffects(this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects), this);
+        getServer().getPluginManager().registerEvents(new BossManager(this), this);
 
         getLogger().info("Elden Ring UHC Activé !");
     }
