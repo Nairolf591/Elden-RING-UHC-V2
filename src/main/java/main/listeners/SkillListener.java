@@ -87,15 +87,28 @@ public class SkillListener implements Listener {
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (item != null && item.getType() == Material.DIAMOND_SWORD && item.hasItemMeta() &&
-                item.getItemMeta().getDisplayName().equals("§4Lame Maudite de Morgott")) {
+                    item.getItemMeta().getDisplayName().equals("§4Lame Maudite de Morgott")) {
                 Morgott.useLameMaudite(player);
             }
         }
 
 // Ajouter un nouvel item pour Courroux de l'Omen si nécessaire
-        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() &&
-                item.getItemMeta().getDisplayName().equals("§4Courroux de l'Omen")) {
-            Morgott.useCourrouxOmen(player);
+        if (item != null && item.getType() == Material.NETHER_STAR && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals("§4Courroux de l'Omen")) {
+            long remainingCooldown = SkillManager.getInstance().getCooldownRemaining(player);
+
+            if (remainingCooldown > 0) {
+                // Afficher le temps restant
+                long minutes = remainingCooldown / 60;
+                long seconds = remainingCooldown % 60;
+                player.sendMessage(ChatColor.RED + "Compétence en cooldown ! Temps restant : " + minutes + "m " + seconds + "s");
+            } else {
+                // Activer la compétence
+                Morgott.useCourrouxOmen(player);
+                SkillManager.getInstance().setCooldown(player);
+                player.sendMessage(ChatColor.GREEN + "Vous avez utilisé Courroux de l'Omen !");
+            }
+
+            event.setCancelled(true); // Annuler l'événement pour éviter des comportements indésirables
         }
     }
 

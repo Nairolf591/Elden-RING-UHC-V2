@@ -25,7 +25,8 @@ public class Morgott {
     private static final int MANA_COST_LAME_MAUDITE = 60; // Coût en Mana pour Lame Maudite
     private static final int MANA_COST_COURROUX_OMEN = 80; // Coût en Mana pour Courroux de l'Omen
     private static final int COOLDOWN_LAME_MAUDITE = 10; // Cooldown en secondes
-    private static final int COOLDOWN_COURROUX_OMEN = 20; // Cooldown en secondes
+    private static final int COOLDOWN_COURROUX_OMEN = 1200; // 20 minutes (1200 secondes)
+
 
     // Applique les effets de Morgott au joueur
     public static void applyMorgott(Player player) {
@@ -36,9 +37,13 @@ public class Morgott {
         }
 
         playerData.setRole(Role.MORGOTT); // Assigner le rôle Morgott
+        Bukkit.getLogger().info("Rôle Morgott appliqué à " + player.getName());
 
         // Donner 3 cœurs supplémentaires
         player.setMaxHealth(player.getMaxHealth() + 6); // 3 cœurs = 6 points de vie
+
+        // Donner la Nether Star au joueur
+        player.getInventory().addItem(getNetherStar()); // Utilisation de la nouvelle méthode
 
         // Donner l'épée maudite au joueur
         player.getInventory().addItem(getLameMaudite());
@@ -80,7 +85,8 @@ public class Morgott {
             // Effets sur les ennemis
             player.getWorld().getNearbyEntities(center, 5, 5, 5).forEach(entity -> {
                 if (entity instanceof Player && !entity.equals(player)) {
-                    ((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1)); // Wither niveau 1 pendant 2 secondes
+                    ((Player) entity).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 160, 1)); // Wither niveau 1 pendant 8 secondes (160 ticks = 8 secondes)
+
                 }
             });
         } else {
@@ -133,10 +139,28 @@ public class Morgott {
         meta.setLore(Arrays.asList(
                 "§7Cendre de guerre : Inflict le saignement (Wither) aux ennemis.",
                 "§bCoût : " + MANA_COST_LAME_MAUDITE + " Mana",
-                "§cEffet : Wither niveau 1 pendant 2 secondes"
+                "§cEffet : Wither niveau 1 pendant 8 secondes"
         ));
         meta.addEnchant(org.bukkit.enchantments.Enchantment.DAMAGE_ALL, 3, true); // Sharpness 3
         sword.setItemMeta(meta);
         return sword;
+    }
+
+    public static ItemStack getNetherStar() {
+        // Créer la Nether Star
+        ItemStack netherStar = new ItemStack(Material.NETHER_STAR);
+        ItemMeta meta = netherStar.getItemMeta();
+        meta.setDisplayName("§4Courroux de l'Omen");
+        meta.setLore(Arrays.asList(
+                "§7Utilisez pour activer vos compétences.",
+                "§cClique droit pour utiliser.",
+                "§7- Coût en Mana : §b" + MANA_COST_COURROUX_OMEN,
+                "§7- Inflige des dégâts de zone et §eralentit §7les ennemis."
+
+        ));
+        netherStar.setItemMeta(meta);
+
+        // Retourner la Nether Star
+        return netherStar;
     }
 }

@@ -79,10 +79,17 @@ public class GameManager {
         PlayerManager playerManager = PlayerManager.getInstance();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            // Vérifier si PlayerData existe
+            if (playerManager.getPlayerData(player) == null) {
+                Bukkit.getLogger().warning("PlayerData non initialisé pour " + player.getName() + ", initialisation en cours...");
+                playerManager.addPlayer(player); // Initialiser PlayerData si nécessaire
+            }
+
             for (Role role : Role.values()) {
                 if (roleManager.isRoleEnabled(role)) {
-                    playerManager.setPlayerRole(player, role);
-                    // Récupère le rôle du joueur
+                    playerManager.setPlayerRole(player, role); // Attribuer le rôle
+                    Bukkit.getLogger().info("Rôle " + role.getName() + " attribué à " + player.getName()); // Debug
+
 
                     // Si le rôle est "Sans-Éclats", donner les Nether Stars
                     if (role == Role.SANS_ECLAT) {
@@ -131,6 +138,8 @@ public class GameManager {
 
                     if (role == Role.MORGOTT) {
                         Morgott.applyMorgott(player);
+                        Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
+
                     }
                 }
             }

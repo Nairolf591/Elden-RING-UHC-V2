@@ -1,5 +1,6 @@
 package main.game;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,9 @@ public class PlayerManager {
     public void addPlayer(Player player) {
         if (playerDataMap.get(player) == null) { // Vérifie si le joueur n'est pas déjà enregistré
             playerDataMap.put(player, new PlayerData(player)); // Crée une nouvelle instance de PlayerData
+            Bukkit.getLogger().info("PlayerData créé pour " + player.getName()); // Debug
+        } else {
+            Bukkit.getLogger().info("PlayerData existe déjà pour " + player.getName()); // Debug
         }
     }
 
@@ -41,6 +45,9 @@ public class PlayerManager {
         PlayerData playerData = playerDataMap.get(player);
         if (playerData != null) {
             playerData.setRole(role);
+            Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
+        } else {
+            Bukkit.getLogger().warning("PlayerData est null pour " + player.getName()); // Debug
         }
     }
 

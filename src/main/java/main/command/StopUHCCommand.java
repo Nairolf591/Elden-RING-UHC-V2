@@ -38,6 +38,7 @@ public class StopUHCCommand implements CommandExecutor {
             player.teleport(defaultWorld.getSpawnLocation());
 
             // Rétablir les stats par défaut
+            player.setMaxHealth(20); // Réinitialiser la vie maximale à 20
             player.setHealth(20); // Vie maximale
             player.setFoodLevel(20); // Nourriture maximale
             player.setGameMode(GameMode.SURVIVAL);
@@ -58,6 +59,7 @@ public class StopUHCCommand implements CommandExecutor {
             Bukkit.unloadWorld(uhcWorld, false);
             WorldCreator worldCreator = new WorldCreator("UHC"); // Créer un WorldCreator avec le nom "UHC"
             Bukkit.createWorld(worldCreator); // Recréer le monde
+
 
             // Rétablir l'état du jeu à CONFIG
             GameManager.getInstance().setCurrentState(GameState.CONFIG);

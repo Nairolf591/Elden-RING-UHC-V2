@@ -92,7 +92,8 @@ public final class main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerManager.getInstance().addPlayer(player); // Initialise les données du joueur
+        PlayerManager.getInstance().addPlayer(player); // Initialiser les données du joueur
+        Bukkit.getLogger().info("PlayerData initialisé pour " + player.getName()); // Debug
     }
 
 
