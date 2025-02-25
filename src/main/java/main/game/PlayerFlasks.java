@@ -22,8 +22,9 @@ public class PlayerFlasks {
      */
     public void useEstus(Player player) {
         if (estus > 0) {
-            estus--;
-            player.setHealth(player.getHealth() + 5); // Régénérer 5 HP
+            estus--; // Retirer une fiole
+            double health = player.getHealth();
+            player.setHealth(Math.min(health + 6, 20)); // Soigner 3 cœurs (6 points de vie)
             player.sendMessage("§aVous avez utilisé une fiole d'Estus !");
         } else {
             player.sendMessage("§cVous n'avez plus de fioles d'Estus.");
@@ -36,11 +37,38 @@ public class PlayerFlasks {
      */
     public void useMana(Player player) {
         if (mana > 0) {
-            mana--;
-            // Exemple : Régénérer de la mana (à adapter selon les besoins)
+            mana--; // Retirer une fiole
+            int currentMana = ManaManager.getInstance().getMana(player);
+            ManaManager.getInstance().setMana(player, Math.min(currentMana + 90, 100)); // Restaurer 90 mana
             player.sendMessage("§aVous avez utilisé une fiole de Mana !");
         } else {
             player.sendMessage("§cVous n'avez plus de fioles de Mana.");
+        }
+    }
+
+    /**
+     * Utiliser une fiole d'Estus automatiquement si le joueur est en dessous de 5 coeurs.
+     * @param player : Le joueur à soigner.
+     */
+    public void autoUseEstus(Player player) {
+        if (estus > 0 && player.getHealth() < 10) { // 5 coeurs = 10 points de vie
+            estus--; // Retirer une fiole
+            double health = player.getHealth();
+            player.setHealth(Math.min(health + 6, 20)); // Soigner 3 coeurs (6 points de vie)
+            player.sendMessage("§aVous avez utilisé une fiole d'Estus !");
+        }
+    }
+
+    /**
+     * Utiliser une fiole de Mana automatiquement si le joueur est en dessous de 50 mana.
+     * @param player : Le joueur à régénérer.
+     */
+    public void autoUseMana(Player player) {
+        if (mana > 0 && ManaManager.getInstance().getMana(player) < 50) {
+            mana--; // Retirer une fiole
+            int currentMana = ManaManager.getInstance().getMana(player);
+            ManaManager.getInstance().setMana(player, Math.min(currentMana + 90, 100)); // Restaurer 90 mana
+            player.sendMessage("§aVous avez utilisé une fiole de Mana !");
         }
     }
 

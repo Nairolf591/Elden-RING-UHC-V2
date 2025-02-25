@@ -95,6 +95,7 @@ public final class main extends JavaPlugin implements Listener {
         // Enregistrer les événements
         getServer().getPluginManager().registerEvents(new CampfireListener(campfireManager, playerFlasksMap), this);
 
+        startFlaskAutoUseChecker();
 
 
         getLogger().info("Elden Ring UHC Activé !");
@@ -127,11 +128,20 @@ public final class main extends JavaPlugin implements Listener {
         }, 0L, 20L); // Exécuter toutes les secondes (20 ticks = 1 seconde)
     }
 
+    private void startFlaskAutoUseChecker() {
+        // Tâche planifiée pour vérifier les fioles toutes les secondes (20 ticks)
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                PlayerFlasks playerFlasks = playerFlasksMap.get(player);
+                if (playerFlasks != null) {
+                    playerFlasks.autoUseEstus(player); // Utiliser l'Estus si nécessaire
+                    playerFlasks.autoUseMana(player); // Utiliser la Mana si nécessaire
+                }
+            }
+        }, 0L, 20L); // 0L = aucun délai initial, 20L = toutes les secondes
+    }
+
     public static main getInstance() {
         return instance;
     }
-
-
-
-
 }
