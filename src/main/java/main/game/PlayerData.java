@@ -35,4 +35,9 @@ public class PlayerData {
         player.sendMessage(role.getCamp().getColor() + "Description : " + role.getDescription());
         player.sendMessage(role.getCamp().getColor() + "Pouvoirs : " + role.getPowers());
     }
+
+    // Vérifie si le joueur est un demi-dieu ou un solitaire
+    public boolean isDemigodOrSolo() {
+        return camp == Camp.DEMI_DIEUX || camp == Camp.SOLITAIRE;
+    }
 }

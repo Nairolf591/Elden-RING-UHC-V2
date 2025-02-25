@@ -71,4 +71,10 @@ public class PlayerManager {
     public PlayerData getPlayerData(Player player) {
         return playerDataMap.get(player);
     }
+
+    // Vérifie si un joueur est un demi-dieu ou un solitaire
+    public static boolean isDemigodOrSolo(Player player) {
+        PlayerData playerData = getInstance().getPlayerData(player);
+        return playerData != null && playerData.isDemigodOrSolo();
+    }
 }

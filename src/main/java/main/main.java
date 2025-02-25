@@ -81,6 +81,10 @@ public final class main extends JavaPlugin implements Listener {
         TalismanEffects talismanEffects = new TalismanEffects(this);
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects), this);
         getServer().getPluginManager().registerEvents(new BossManager(this), this);
+        new CampfireManager(this);
+        new EstusManager(this);
+        new ManaPotionManager(this);
+        getServer().getPluginManager().registerEvents(new CampfireManager(this), this);
 
         getLogger().info("Elden Ring UHC Activé !");
     }

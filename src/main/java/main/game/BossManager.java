@@ -55,8 +55,8 @@ public class BossManager implements Listener {
 
 
     private void startBossSpawner() {
-        // Nombre aléatoire de boss entre 1 et 10
-        int numberOfBosses = random.nextInt(10) + 1;
+        // Nombre aléatoire de boss entre 1 et 6
+        int numberOfBosses = random.nextInt(6) + 1;
 
         for (int i = 0; i < numberOfBosses; i++) {
             // Temps aléatoire pour le spawn entre 0 et 20 minutes
