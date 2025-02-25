@@ -3,6 +3,7 @@ package main.game;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,8 +56,14 @@ public class BossManager implements Listener {
 
 
     private void startBossSpawner() {
-        // Nombre aléatoire de boss entre 1 et 6
-        int numberOfBosses = random.nextInt(6) + 1;
+        // Vérifie si le jeu est en mode PLAYING
+        if (GameManager.getInstance().getCurrentState() != GameState.PLAYING) {
+            plugin.getLogger().info("§cLe spawn des boss est ignoré car le jeu n'est pas en mode PLAYING.");
+            return;
+        }
+
+        // Nombre aléatoire de boss entre 1 et 10
+        int numberOfBosses = random.nextInt(10) + 1;
 
         for (int i = 0; i < numberOfBosses; i++) {
             // Temps aléatoire pour le spawn entre 0 et 20 minutes
@@ -81,18 +88,23 @@ public class BossManager implements Listener {
     }
 
     private void spawnBoss() {
-        int borderSize = (int) Bukkit.getWorld("UHC").getWorldBorder().getSize();
-        int x = random.nextInt(borderSize * 2) - borderSize;
-        int z = random.nextInt(borderSize * 2) - borderSize;
-        Location spawnLocation = new Location(Bukkit.getWorld("UHC"), x, 100, z);
+        World uhcWorld = Bukkit.getWorld("UHC");
+        if (uhcWorld == null) {
+            plugin.getLogger().warning("Le monde UHC n'existe pas !");
+            return;
+        }
 
-        // Calcul de la distance par rapport à (0, 0)
-        double distance = spawnLocation.distance(new Location(spawnLocation.getWorld(), 0, 100, 0));
-        String distanceRange = getDistanceRange(distance); // Obtenir la plage de distance
+        int maxDistance = 300; // Distance maximale de 300 blocs du 0 0
+        int x = random.nextInt(maxDistance * 2) - maxDistance;
+        int z = random.nextInt(maxDistance * 2) - maxDistance;
+        Location spawnLocation = new Location(uhcWorld, x, uhcWorld.getHighestBlockYAt(x, z) + 1, z);
 
-        // Choix aléatoire d'un boss parmi plusieurs types
-        int bossType = random.nextInt(3); // 0, 1 ou 2
+        double distance = spawnLocation.distance(new Location(uhcWorld, 0, uhcWorld.getHighestBlockYAt(0, 0), 0));
+        String distanceRange = getDistanceRange(distance);
+
+        int bossType = random.nextInt(3);
         LivingEntity boss;
+
 
         switch (bossType) {
             case 0:
@@ -135,9 +147,8 @@ public class BossManager implements Listener {
         Bukkit.broadcastMessage("§6Un boss est apparu " + distanceRange + " du 0 0 !");
     }
 
-    @EventHandler
     public void onBossDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Zombie && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().equals("Chevalier du creset")) {
+        if (event.getEntity() instanceof LivingEntity && event.getEntity().getCustomName() != null) {
             Player killer = event.getEntity().getKiller();
             if (killer != null) {
                 if (countTalismans(killer) < 2) {
@@ -150,6 +161,7 @@ public class BossManager implements Listener {
             }
         }
     }
+
 
     private int countTalismans(Player player) {
         int count = 0;

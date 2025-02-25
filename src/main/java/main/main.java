@@ -15,12 +15,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class main extends JavaPlugin implements Listener {
 
     private EldenRingUHCScoreboard eldenScoreboardManager; // Utilisation de la classe renommée
     private GameScoreboard gameScoreboard; // Déclarer gameScoreboard en tant que champ
     private ScoreboardManager scoreboardManager;
     private static main instance; // Stocker une instance statique de la classe
+    private CampfireManager campfireManager;
+    private Map<Player, PlayerFlasks> playerFlasksMap;
 
     @Override
     public void onEnable() {
@@ -81,10 +86,16 @@ public final class main extends JavaPlugin implements Listener {
         TalismanEffects talismanEffects = new TalismanEffects(this);
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects), this);
         getServer().getPluginManager().registerEvents(new BossManager(this), this);
-        new CampfireManager(this);
         new EstusManager(this);
         new ManaPotionManager(this);
-        getServer().getPluginManager().registerEvents(new CampfireManager(this), this);
+        // Initialiser les managers
+        campfireManager = new CampfireManager();
+        playerFlasksMap = new HashMap<>();
+
+        // Enregistrer les événements
+        getServer().getPluginManager().registerEvents(new CampfireListener(campfireManager, playerFlasksMap), this);
+
+
 
         getLogger().info("Elden Ring UHC Activé !");
     }
