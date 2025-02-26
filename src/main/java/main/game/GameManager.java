@@ -93,6 +93,7 @@ public class GameManager {
 
                     // Si le rôle est "Sans-Éclats", donner les Nether Stars
                     if (role == Role.SANS_ECLAT) {
+                        CampManager.getInstance().setPlayerCamp(player, "Bastion de la Table Ronde");
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f); // Son de niveau up
                         player.sendMessage(ChatColor.GOLD + "╔══════════════════════════════════════════╗");
                         player.sendMessage(ChatColor.GOLD + "║               §eVous êtes §6Le Sans-Éclat §e!                           ║");

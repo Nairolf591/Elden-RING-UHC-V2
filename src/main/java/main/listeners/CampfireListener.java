@@ -3,6 +3,7 @@ package main.listeners;
 import main.game.CampfireData;
 import main.game.CampfireManager;
 import main.game.PlayerFlasks;
+import main.utils.CampUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
@@ -63,7 +64,7 @@ public class CampfireListener implements Listener {
      */
     private void openCampfireMenu(Player player, CampfireData campfire) {
         // Vérifier si le joueur fait partie du camp Bastion de la Table Ronde
-        boolean isTableRonde = isTableRonde(player); // Méthode à implémenter selon ton système de camp
+        boolean isTableRonde = CampUtils.isTableRonde(player);
 
         if (isTableRonde) {
             // Menu pour les joueurs de la Table Ronde (fioles)

@@ -21,11 +21,11 @@ public class TableRondeInteraction {
         if (campfire != null && campfire.isLit()) {
             switch (choice) {
                 case "Estus":
-                    playerFlasks.setEstus(playerFlasks.getEstus() + 1);
+                    playerFlasks.addEstus(player);
                     player.sendMessage("Vous avez choisi une fiole d'Estus !");
                     break;
                 case "Mana":
-                    playerFlasks.setMana(playerFlasks.getMana() + 1);
+                    playerFlasks.addMana(player);
                     player.sendMessage("Vous avez choisi une fiole de Mana !");
                     break;
                 default:
