@@ -7,68 +7,55 @@ public class CampfireData {
     private int charges;             // Nombre de charges restantes
     private boolean isLit;           // État du feu de camp (allumé ou éteint)
 
-    /**
-     * Constructeur pour un nouveau feu de camp.
-     * @param location : L’emplacement du feu de camp.
-     */
     public CampfireData(Location location) {
         this.location = location;
-        this.charges = 6; // Réinitialisation à 6 charges
-        this.isLit = true; // Par défaut, le feu de camp est allumé
+        this.charges = 6; // Initialiser à 6 charges
+        this.isLit = true; // Par défaut, allumé
     }
 
     /**
-     * Éteindre le feu de camp.
+     * Retirer des charges du feu de camp.
+     * @param amount : Le nombre de charges à retirer.
+     * @return true si les charges ont été retirées, false si le feu de camp n'a pas assez de charges.
      */
-    public void extinguish() {
-        this.isLit = false;
-    }
-
-    /**
-     * Rallumer le feu de camp.
-     */
-    public void relight() {
-        this.isLit = true;
+    public boolean reduceCharges(int amount) {
+        if (charges >= amount) {
+            charges -= amount;
+            return true;
+        }
+        return false;
     }
 
     /**
      * Réinitialiser les charges à 6.
      */
     public void resetCharges() {
-        this.charges = 6;
+        charges = 6;
     }
 
     /**
-     * Réduire les charges du feu de camp.
-     * @param amount : Le nombre de charges à retirer.
+     * Éteindre le feu de camp.
      */
-    public void reduceCharges(int amount) {
-        this.charges -= amount;
-        if (this.charges < 0) { // Assurer que les charges ne deviennent pas négatives
-            this.charges = 0;
-        }
+    public void extinguish() {
+        isLit = false;
     }
 
     /**
-     * Obtenir l’emplacement du feu de camp.
-     * @return L’emplacement du feu de camp.
+     * Rallumer le feu de camp.
      */
+    public void relight() {
+        isLit = true;
+    }
+
+    // Getters
     public Location getLocation() {
         return location;
     }
 
-    /**
-     * Obtenir le nombre de charges restantes.
-     * @return Le nombre de charges restantes.
-     */
     public int getCharges() {
         return charges;
     }
 
-    /**
-     * Savoir si le feu de camp est allumé.
-     * @return true si le feu de camp est allumé, sinon false.
-     */
     public boolean isLit() {
         return isLit;
     }

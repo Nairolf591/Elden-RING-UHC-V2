@@ -2,59 +2,60 @@ package main.game;
 
 import org.bukkit.entity.Player;
 
+import main.game.ManaManager;
+
 public class PlayerFlasks {
     private int estus; // Nombre de fioles d'Estus
     private int mana;  // Nombre de fioles de Mana
-    private boolean hasChargesLeft; // Indique si le joueur a des charges restantes dans son dernier feu de camp
+    private static final int MAX_FLASKS = 2; // Limite maximale de fioles (1 Estus et 1 Mana)
 
-    /**
-     * Constructeur par défaut. Initialise les fioles à 0.
-     */
     public PlayerFlasks() {
         this.estus = 0;
         this.mana = 0;
-        this.hasChargesLeft = false;
     }
 
     /**
-     * Utiliser une fiole d'Estus.
-     * @param player : Le joueur qui utilise la fiole.
+     * Ajouter une fiole d'Estus.
+     * @param player : Le joueur à qui ajouter la fiole.
+     * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
-    public void useEstus(Player player) {
-        if (estus > 0) {
-            estus--; // Retirer une fiole
-            double health = player.getHealth();
-            player.setHealth(Math.min(health + 6, 20)); // Soigner 3 cœurs (6 points de vie)
-            player.sendMessage("§aVous avez utilisé une fiole d'Estus !");
+    public boolean addEstus(Player player) {
+        if (estus < 1 && (estus + mana) < MAX_FLASKS) {
+            estus++;
+            player.sendMessage("§aVous avez récupéré une fiole d'Estus !");
+            return true;
         } else {
-            player.sendMessage("§cVous n'avez plus de fioles d'Estus.");
+            player.sendMessage("§cVous avez déjà atteint la limite de fioles d'Estus.");
+            return false;
         }
     }
 
     /**
-     * Utiliser une fiole de Mana.
-     * @param player : Le joueur qui utilise la fiole.
+     * Ajouter une fiole de Mana.
+     * @param player : Le joueur à qui ajouter la fiole.
+     * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
-    public void useMana(Player player) {
-        if (mana > 0) {
-            mana--; // Retirer une fiole
-            int currentMana = ManaManager.getInstance().getMana(player);
-            ManaManager.getInstance().setMana(player, Math.min(currentMana + 90, 100)); // Restaurer 90 mana
-            player.sendMessage("§aVous avez utilisé une fiole de Mana !");
+    public boolean addMana(Player player) {
+        if (mana < 1 && (estus + mana) < MAX_FLASKS) {
+            mana++;
+            player.sendMessage("§aVous avez récupéré une fiole de Mana !");
+            return true;
         } else {
-            player.sendMessage("§cVous n'avez plus de fioles de Mana.");
+            player.sendMessage("§cVous avez déjà atteint la limite de fioles de Mana.");
+            return false;
         }
     }
 
     /**
-     * Utiliser une fiole d'Estus automatiquement si le joueur est en dessous de 5 coeurs.
+     * Utiliser une fiole d'Estus automatiquement si le joueur est en dessous de 5 cœurs.
      * @param player : Le joueur à soigner.
+     * @param isNight : true si c'est la nuit, false sinon.
      */
-    public void autoUseEstus(Player player) {
-        if (estus > 0 && player.getHealth() < 10) { // 5 coeurs = 10 points de vie
-            estus--; // Retirer une fiole
-            double health = player.getHealth();
-            player.setHealth(Math.min(health + 6, 20)); // Soigner 3 coeurs (6 points de vie)
+    public void autoUseEstus(Player player, boolean isNight) {
+        if (estus > 0 && player.getHealth() < 10) { // 5 cœurs = 10 points de vie
+            estus--;
+            double healAmount = isNight ? 1.5 : 3; // 0,75 cœurs la nuit, 1,5 cœurs le jour
+            player.setHealth(Math.min(player.getHealth() + healAmount, 20));
             player.sendMessage("§aVous avez utilisé une fiole d'Estus !");
         }
     }
@@ -65,7 +66,7 @@ public class PlayerFlasks {
      */
     public void autoUseMana(Player player) {
         if (mana > 0 && ManaManager.getInstance().getMana(player) < 50) {
-            mana--; // Retirer une fiole
+            mana--;
             int currentMana = ManaManager.getInstance().getMana(player);
             ManaManager.getInstance().setMana(player, Math.min(currentMana + 90, 100)); // Restaurer 90 mana
             player.sendMessage("§aVous avez utilisé une fiole de Mana !");
@@ -73,77 +74,19 @@ public class PlayerFlasks {
     }
 
     /**
-     * Réinitialiser les fioles (appelé à la fin de la nuit).
+     * Vider les fioles à la fin de la nuit.
      */
     public void resetFlasks() {
         estus = 0;
         mana = 0;
-        hasChargesLeft = false;
-    }
-
-    /**
-     * Ajouter des fioles d'Estus.
-     * @param amount : Le nombre de fioles à ajouter.
-     */
-    public void addEstus(int amount) {
-        estus += amount;
-    }
-
-    /**
-     * Ajouter des fioles de Mana.
-     * @param amount : Le nombre de fioles à ajouter.
-     */
-    public void addMana(int amount) {
-        mana += amount;
-    }
-
-    /**
-     * Définir si le joueur a des charges restantes dans son dernier feu de camp.
-     * @param hasChargesLeft : true s'il reste des charges, sinon false.
-     */
-    public void setHasChargesLeft(boolean hasChargesLeft) {
-        this.hasChargesLeft = hasChargesLeft;
     }
 
     // Getters
-
-    /**
-     * Obtenir le nombre de fioles d'Estus.
-     * @return Le nombre de fioles d'Estus.
-     */
     public int getEstus() {
         return estus;
     }
 
-    /**
-     * Obtenir le nombre de fioles de Mana.
-     * @return Le nombre de fioles de Mana.
-     */
     public int getMana() {
         return mana;
-    }
-
-    /**
-     * Savoir si le joueur a des charges restantes dans son dernier feu de camp.
-     * @return true s'il reste des charges, sinon false.
-     */
-    public boolean hasChargesLeft() {
-        return hasChargesLeft;
-    }
-
-    /**
-     * Définir le nombre de fioles d'Estus.
-     * @param estus : Le nombre de fioles d'Estus à définir.
-     */
-    public void setEstus(int estus) {
-        this.estus = estus;
-    }
-
-    /**
-     * Définir le nombre de fioles de Mana.
-     * @param mana : Le nombre de fioles de Mana à définir.
-     */
-    public void setMana(int mana) {
-        this.mana = mana;
     }
 }

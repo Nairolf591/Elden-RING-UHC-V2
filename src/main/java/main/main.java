@@ -8,6 +8,7 @@ import main.listeners.*;
 import main.skills.SkillManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,9 +95,11 @@ public final class main extends JavaPlugin implements Listener {
 
         // Enregistrer les événements
         getServer().getPluginManager().registerEvents(new CampfireListener(campfireManager, playerFlasksMap), this);
+        getServer().getPluginManager().registerEvents(new NightListener(playerFlasksMap), this);
+        // Lancer la tâche de régénération passive
+        startRegenerationTask();
 
-        startFlaskAutoUseChecker();
-
+        startFlaskUsageTask();
 
         getLogger().info("Elden Ring UHC Activé !");
     }
@@ -128,17 +131,43 @@ public final class main extends JavaPlugin implements Listener {
         }, 0L, 20L); // Exécuter toutes les secondes (20 ticks = 1 seconde)
     }
 
-    private void startFlaskAutoUseChecker() {
-        // Tâche planifiée pour vérifier les fioles toutes les secondes (20 ticks)
+    private void startRegenerationTask() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                // Vérifier si le joueur est près d'un feu de camp allumé
+                for (Location campfireLocation : campfireManager.getCampfireLocations()) {
+                    if (player.getLocation().distance(campfireLocation) <= 5 && campfireManager.getCampfireData(campfireLocation).isLit()) {
+                        // Appliquer la régénération passive (1 HP toutes les 10 secondes)
+                        if (player.getHealth() < 20) {
+                            player.setHealth(Math.min(player.getHealth() + 1, 20));
+                        }
+                        break; // Un seul feu de camp à la fois
+                    }
+                }
+            }
+        }, 0L, 200L); // 200 ticks = 10 secondes
+    }
+
+    private void startFlaskUsageTask() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerFlasks playerFlasks = playerFlasksMap.get(player);
+
                 if (playerFlasks != null) {
-                    playerFlasks.autoUseEstus(player); // Utiliser l'Estus si nécessaire
-                    playerFlasks.autoUseMana(player); // Utiliser la Mana si nécessaire
+                    // Utiliser une fiole d'Estus si nécessaire
+                    playerFlasks.autoUseEstus(player, isNight());
+
+                    // Utiliser une fiole de Mana si nécessaire
+                    playerFlasks.autoUseMana(player);
                 }
             }
-        }, 0L, 20L); // 0L = aucun délai initial, 20L = toutes les secondes
+        }, 0L, 20L); // 20 ticks = 1 seconde
+    }
+
+    private boolean isNight() {
+        // Vérifier si c'est la nuit (temps entre 13000 et 23000 ticks)
+        long time = Bukkit.getWorlds().get(0).getTime();
+        return time >= 13000 && time < 23000;
     }
 
     public static main getInstance() {
