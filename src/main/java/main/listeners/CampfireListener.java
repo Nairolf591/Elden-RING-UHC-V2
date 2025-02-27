@@ -1,12 +1,13 @@
 package main.listeners;
 
-import main.game.CampfireData;
-import main.game.CampfireManager;
-import main.game.PlayerFlasks;
+import main.game.*;
+import main.menus.CampfireMenu;
 import main.utils.CampUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.block.Block;
@@ -20,42 +21,25 @@ import java.util.Map;
 
 public class CampfireListener implements Listener {
     private final CampfireManager campfireManager;
-    private final Map<Player, PlayerFlasks> playerFlasksMap;
+    private Map<Player, PlayerFlasks> playerFlasksMap;
 
     public CampfireListener(CampfireManager campfireManager, Map<Player, PlayerFlasks> playerFlasksMap) {
         this.campfireManager = campfireManager;
         this.playerFlasksMap = playerFlasksMap;
     }
 
-    /**
-     * Gérer l'interaction avec un feu de camp.
-     */
+    // TRÈS IMPORTANT : Enregistre le feu de camp quand il est placé.
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
-
-        // Vérifier si le bloc cliqué est un feu de camp
-        if (block != null && block.getType() == Material.CAMPFIRE) {
-            Location campfireLocation = block.getLocation();
-
-            // Vérifier si le feu de camp est géré par CampfireManager
-            if (campfireManager.hasCampfire(campfireLocation)) {
-                CampfireData campfire = campfireManager.getCampfireData(campfireLocation);
-
-                // Si le feu de camp est allumé, ouvrir le menu
-                if (campfire.isLit()) {
-                    openCampfireMenu(player, campfire);
-                } else {
-                    player.sendMessage("§cCe feu de camp est éteint.");
-                }
-            } else {
-                // Initialiser le feu de camp s'il n'existe pas encore
-                campfireManager.initCampfire(campfireLocation);
-                player.sendMessage("§aUn nouveau feu de camp a été enregistré !");
-            }
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (GameManager.getInstance().getCurrentState() != GameState.PLAYING){
+            return;
+        }
+        Block block = event.getBlock();
+        if (block.getType() == Material.CAMPFIRE) {
+            campfireManager.initCampfire(block.getLocation()); // Enregistrement immédiat
         }
     }
+
 
     /**
      * Ouvrir le menu du feu de camp.
@@ -138,88 +122,113 @@ public class CampfireListener implements Listener {
         player.openInventory(menu);
     }
 
-    /**
-     * Gérer les clics dans les menus.
-     */
+
     @EventHandler
-    public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (GameManager.getInstance().getCurrentState() != GameState.PLAYING){
+            return;
+        }
+        Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
 
-        Player player = (Player) event.getWhoClicked();
-        Inventory menu = event.getClickedInventory();
-        ItemStack item = event.getCurrentItem();
+        if (block != null && block.getType() == Material.CAMPFIRE) {
+            Location loc = block.getLocation();
+            if (campfireManager.hasCampfire(loc)) {
+                CampfireData campfire = campfireManager.getCampfireData(loc);
+                //On ouvre le menu uniquement si le feu est allumé
+                if(campfire.isLit()){
+                    CampfireMenu.openCampfireMenu(player); // Ouvre l'interface utilisateur (à voir plus tard)
+                } else {
+                    player.sendMessage("§cCe feu de camp est éteint.");
+                }
+            } else {
+                //Normalement impossible car on gère le onBlockPlace
+                campfireManager.initCampfire(loc);
+                player.sendMessage("§aNouveau feu de camp enregistré!"); // Debug
+            }
+        }
+    }
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        //Verification de l'état de la partie
+        if (GameManager.getInstance().getCurrentState() != GameState.PLAYING){
+            return;
+        }
 
-        // Vérifier si le clic est dans un menu de feu de camp
-        if (menu == null || item == null || !item.hasItemMeta()) return;
-
-        String menuTitle = event.getView().getTitle();
-        String itemName = item.getItemMeta().getDisplayName();
-
-        // Gérer le menu des fioles
-        if (menuTitle.equals("§6Feu de Camp")) {
+        if (event.getView().getTitle().equals("§6Feu de Camp")) {
             event.setCancelled(true);
 
-            // Récupérer le feu de camp
-            Block block = player.getTargetBlockExact(5);
-            if (block == null || block.getType() != Material.CAMPFIRE) return;
+            if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta()) return;
 
+            Player player = (Player) event.getWhoClicked();
+            String itemName = event.getCurrentItem().getItemMeta().getDisplayName();
+
+
+            // Récupération du feu de camp.  On utilise getTargetBlockExact pour plus de précision.
+            Block block = player.getTargetBlockExact(5);
+            if (block == null || block.getType() != Material.CAMPFIRE) {
+                player.sendMessage("§cVeuillez cliquer sur un feu de camp.");
+                return;
+            }
             Location campfireLocation = block.getLocation();
             CampfireData campfire = campfireManager.getCampfireData(campfireLocation);
-            PlayerFlasks playerFlasks = playerFlasksMap.get(player);
 
-            if (playerFlasks == null) {
-                // Initialiser les données du joueur
-                playerFlasks = new PlayerFlasks();
-                playerFlasksMap.put(player, playerFlasks);
-                player.sendMessage("§aVos données ont été initialisées.");
+            if (campfire == null) { // Vérification supplémentaire importante!
+                player.sendMessage("§cCe feu de camp n'est pas enregistré.");
+                return;
             }
 
-            // Gérer le choix du joueur
+
+            if (!campfire.isLit()) { // Vérification d'état
+                player.sendMessage("§cCe feu de camp est éteint!");
+                player.closeInventory();
+                return;
+            }
+
+            if (campfire.getCharges() <= 0) {
+                player.sendMessage("§cCe feu de camp n'a plus de charges !");
+                player.closeInventory();
+                return;
+            }
+
+            // Récupération/Création de PlayerFlasks.  *TOUJOURS* faire ça avant de modifier.
+            //PlayerFlasks playerFlasks = playerFlasksMap.getOrDefault(player, new PlayerFlasks());
+
+
+            // Gestion des clics. Plus lisible avec un switch.
             switch (itemName) {
                 case "§cFiole d'Estus":
-                    if (playerFlasks.addEstus(player)) {
-                        campfire.reduceCharges(1);
+                    if (campfire.reduceCharges(1)) { // La méthode reduceCharges renvoie true si la réduction a réussi
+                        //playerFlasks.addEstus(1);
+                        player.sendMessage("§aVous avez récupéré une fiole d'Estus !");
                     }
                     break;
                 case "§bFiole de Mana":
-                    if (playerFlasks.addMana(player)) {
-                        campfire.reduceCharges(1);
+                    if(campfire.reduceCharges(1)) {
+                        //playerFlasks.addMana(1);
+                        player.sendMessage("§aVous avez récupéré une fiole de Mana !");
                     }
                     break;
-                case "§cAnnuler":
+                case "§dLes deux fioles":
+                    if (campfire.reduceCharges(2)) {  //Vérification géré par le reduceCharges
+                        //playerFlasks.addEstus(1);
+                        //playerFlasks.addMana(1);
+                        player.sendMessage("§aVous avez récupéré une fiole d'Estus et une fiole de Mana !");
+                    }
                     break;
+                case "§cQuitter": //Pour quitter le menu proprement
+                    player.closeInventory();
+                    return;
+                default: // Cas par défaut, au cas où.
+                    return;
             }
 
-            // Fermer le menu
-            player.closeInventory();
-        }
-
-        // Gérer le menu des charges
-        else if (menuTitle.equals("§6Retirer des charges")) {
-            event.setCancelled(true);
-
-            // Récupérer le feu de camp
-            Block block = player.getTargetBlockExact(5);
-            if (block == null || block.getType() != Material.CAMPFIRE) return;
-
-            Location campfireLocation = block.getLocation();
-            CampfireData campfire = campfireManager.getCampfireData(campfireLocation);
-
-            // Gérer le choix du joueur
-            if (itemName.startsWith("§eRetirer ")) {
-                int amount = Integer.parseInt(itemName.split(" ")[1]); // Extraire le nombre de charges
-
-                if (campfire.getCharges() >= amount) {
-                    campfire.reduceCharges(amount);
-                    player.sendMessage("§aVous avez retiré " + amount + " charge(s) du feu de camp !");
-                } else {
-                    player.sendMessage("§cCe feu de camp n'a pas assez de charges !");
-                }
-            } else if (itemName.equals("§cAnnuler")) {
-                // Fermer le menu sans rien faire
+            // MISE À JOUR DE LA MAP *APRÈS* LES MODIFICATIONS.
+            //playerFlasksMap.put(player, playerFlasks);
+            if (campfire.getCharges() <= 0) {
+                campfire.extinguish();
+                player.sendMessage("§cLe feu de camp est éteint !");
             }
-
-            // Fermer le menu
             player.closeInventory();
         }
     }

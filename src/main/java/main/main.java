@@ -15,6 +15,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.block.BlockPlaceEvent; // Import pour l'événement de placement
+import org.bukkit.event.inventory.InventoryClickEvent;// Import pour l'événement de click dans l'inventaire
+import main.menus.CampfireMenu;
 
 import java.util.HashMap;
 import java.util.Map;

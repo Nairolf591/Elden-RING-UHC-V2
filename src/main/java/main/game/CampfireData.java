@@ -13,18 +13,6 @@ public class CampfireData {
         this.isLit = true; // Par défaut, allumé
     }
 
-    /**
-     * Retirer des charges du feu de camp.
-     * @param amount : Le nombre de charges à retirer.
-     * @return true si les charges ont été retirées, false si le feu de camp n'a pas assez de charges.
-     */
-    public boolean reduceCharges(int amount) {
-        if (charges >= amount) {
-            charges -= amount;
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Réinitialiser les charges à 6.
@@ -54,6 +42,19 @@ public class CampfireData {
 
     public int getCharges() {
         return charges;
+    }
+
+    /**
+     * Réduire les charges du feu de camp.
+     * @param amount : Le nombre de charges à retirer.
+     */
+    public boolean reduceCharges(int amount) {
+        //Pas de if (this.charges >= amount), la condition est testé dans la méthode de CampfireManager
+        this.charges -= amount;
+        if (this.charges < 0) {
+            this.charges = 0;
+        }
+        return true;
     }
 
     public boolean isLit() {
