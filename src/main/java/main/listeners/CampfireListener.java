@@ -167,7 +167,12 @@ public class CampfireListener implements Listener {
             CampfireData campfire = campfireManager.getCampfireData(campfireLocation);
             PlayerFlasks playerFlasks = playerFlasksMap.get(player);
 
-            if (playerFlasks == null) return;
+            if (playerFlasks == null) {
+                // Initialiser les données du joueur
+                playerFlasks = new PlayerFlasks();
+                playerFlasksMap.put(player, playerFlasks);
+                player.sendMessage("§aVos données ont été initialisées.");
+            }
 
             // Gérer le choix du joueur
             switch (itemName) {

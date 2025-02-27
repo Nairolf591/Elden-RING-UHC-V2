@@ -7,7 +7,7 @@ import main.game.ManaManager;
 public class PlayerFlasks {
     private int estus; // Nombre de fioles d'Estus
     private int mana;  // Nombre de fioles de Mana
-    private static final int MAX_FLASKS = 2; // Limite maximale de fioles (1 Estus et 1 Mana)
+    private static final int MAX_FLASKS = 2; // Limite maximale de fioles (1 Estus et 1 Mana, ou 2 Estus)
 
     public PlayerFlasks() {
         this.estus = 0;
@@ -20,7 +20,7 @@ public class PlayerFlasks {
      * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
     public boolean addEstus(Player player) {
-        if (estus < 1 && (estus + mana) < MAX_FLASKS) {
+        if (estus < 2 || (estus + mana) < MAX_FLASKS) {
             estus++;
             player.sendMessage("§aVous avez récupéré une fiole d'Estus !");
             return true;
@@ -36,7 +36,7 @@ public class PlayerFlasks {
      * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
     public boolean addMana(Player player) {
-        if (mana < 1 && (estus + mana) < MAX_FLASKS) {
+        if (mana < 2 || (estus + mana) < MAX_FLASKS) {
             mana++;
             player.sendMessage("§aVous avez récupéré une fiole de Mana !");
             return true;
