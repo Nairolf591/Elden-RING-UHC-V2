@@ -1,92 +1,85 @@
+// src/main/java/main/game/PlayerFlasks.java (Avec limites)
 package main.game;
 
 import org.bukkit.entity.Player;
 
-import main.game.ManaManager;
-
 public class PlayerFlasks {
-    private int estus; // Nombre de fioles d'Estus
-    private int mana;  // Nombre de fioles de Mana
-    private static final int MAX_FLASKS = 2; // Limite maximale de fioles (1 Estus et 1 Mana, ou 2 Estus)
+    private int estus;
+    private int mana;
+    private static final int MAX_FLASKS = 2;  // Limite totale
 
     public PlayerFlasks() {
         this.estus = 0;
         this.mana = 0;
     }
-
     /**
      * Ajouter une fiole d'Estus.
      * @param player : Le joueur à qui ajouter la fiole.
-     * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
     public boolean addEstus(Player player) {
-        if (estus < 2 || (estus + mana) < MAX_FLASKS) {
+        if (estus < 2 && estus+mana < MAX_FLASKS) {
             estus++;
             player.sendMessage("§aVous avez récupéré une fiole d'Estus !");
-            return true;
-        } else {
-            player.sendMessage("§cVous avez déjà atteint la limite de fioles d'Estus.");
+            return true; //Retourne si l'ajout est fait ou non
+        }
+        else
+        {
+            player.sendMessage("§cVous avez atteint la limite maximal de fioles !");
             return false;
         }
     }
-
     /**
      * Ajouter une fiole de Mana.
      * @param player : Le joueur à qui ajouter la fiole.
-     * @return true si la fiole a été ajoutée, false si la limite est atteinte.
      */
     public boolean addMana(Player player) {
-        if (mana < 2 || (estus + mana) < MAX_FLASKS) {
+        if(mana < 2 && estus+mana < MAX_FLASKS) {
             mana++;
             player.sendMessage("§aVous avez récupéré une fiole de Mana !");
-            return true;
-        } else {
-            player.sendMessage("§cVous avez déjà atteint la limite de fioles de Mana.");
-            return false;
+            return true; //Retourne si l'ajout est fait ou non
+        }
+        else
+        {
+            player.sendMessage("§cVous avez atteint la limite maximal de fioles !");
+            return false; //Retourne si l'ajout est fait ou non
         }
     }
 
-    /**
-     * Utiliser une fiole d'Estus automatiquement si le joueur est en dessous de 5 cœurs.
-     * @param player : Le joueur à soigner.
-     * @param isNight : true si c'est la nuit, false sinon.
-     */
-    public void autoUseEstus(Player player, boolean isNight) {
-        if (estus > 0 && player.getHealth() < 10) { // 5 cœurs = 10 points de vie
+
+    public void autoUseEstus(Player player, boolean isDay) {
+        if (estus > 0 && player.getHealth() < 10) {
             estus--;
-            double healAmount = isNight ? 1.5 : 3; // 0,75 cœurs la nuit, 1,5 cœurs le jour
-            player.setHealth(Math.min(player.getHealth() + healAmount, 20));
+            double healAmount = isDay ? 3 : 1.5;  // Ajusté à la description
+            player.setHealth(Math.min(player.getHealth() + healAmount, player.getMaxHealth())); //Important pour ne pas dépasser la vie max
             player.sendMessage("§aVous avez utilisé une fiole d'Estus !");
         }
     }
 
-    /**
-     * Utiliser une fiole de Mana automatiquement si le joueur est en dessous de 50 mana.
-     * @param player : Le joueur à régénérer.
-     */
     public void autoUseMana(Player player) {
         if (mana > 0 && ManaManager.getInstance().getMana(player) < 50) {
             mana--;
-            int currentMana = ManaManager.getInstance().getMana(player);
-            ManaManager.getInstance().setMana(player, Math.min(currentMana + 90, 100)); // Restaurer 90 mana
+            ManaManager.getInstance().setMana(player, ManaManager.getInstance().getMana(player) + 90); //Complément de mana
             player.sendMessage("§aVous avez utilisé une fiole de Mana !");
         }
     }
 
-    /**
-     * Vider les fioles à la fin de la nuit.
-     */
-    public void resetFlasks() {
+    //Plus besoin car géré dans CampfireManager
+    /*public void resetFlasks() {
         estus = 0;
         mana = 0;
-    }
+    }*/
 
-    // Getters
+    // Getters, important pour l'affichage, la sauvegarde, etc.
     public int getEstus() {
         return estus;
     }
 
     public int getMana() {
         return mana;
+    }
+
+    public void resetFlasks() { //REMIS
+        estus = 0;
+        mana = 0;
     }
 }

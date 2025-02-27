@@ -1,60 +1,50 @@
+// src/main/java/main/game/CampfireData.java (Avec gestion de l'état)
 package main.game;
 
 import org.bukkit.Location;
 
 public class CampfireData {
-    private final Location location; // Emplacement du feu de camp
-    private int charges;             // Nombre de charges restantes
-    private boolean isLit;           // État du feu de camp (allumé ou éteint)
+    private final Location location;
+    private int charges;
+    private boolean isLit; // Important pour gérer l'état allumé/éteint
 
     public CampfireData(Location location) {
         this.location = location;
-        this.charges = 6; // Initialiser à 6 charges
-        this.isLit = true; // Par défaut, allumé
+        this.charges = 6;
+        this.isLit = true; // Allumé par défaut
     }
 
+    public boolean reduceCharges(int amount) {
+        if (this.charges >= amount) {
+            this.charges -= amount;
+            if (this.charges <= 0) {
+                this.charges = 0;  //Pour que ça passe pas en négatif
+            }
+            return true;
+        }
+        return false;
+    }
 
-    /**
-     * Réinitialiser les charges à 6.
-     */
     public void resetCharges() {
-        charges = 6;
+        this.charges = 6;
     }
 
-    /**
-     * Éteindre le feu de camp.
-     */
+
     public void extinguish() {
         isLit = false;
     }
 
-    /**
-     * Rallumer le feu de camp.
-     */
+
     public void relight() {
         isLit = true;
     }
 
-    // Getters
     public Location getLocation() {
         return location;
     }
 
     public int getCharges() {
         return charges;
-    }
-
-    /**
-     * Réduire les charges du feu de camp.
-     * @param amount : Le nombre de charges à retirer.
-     */
-    public boolean reduceCharges(int amount) {
-        //Pas de if (this.charges >= amount), la condition est testé dans la méthode de CampfireManager
-        this.charges -= amount;
-        if (this.charges < 0) {
-            this.charges = 0;
-        }
-        return true;
     }
 
     public boolean isLit() {

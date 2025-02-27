@@ -36,8 +36,12 @@ public class PlayerData {
         player.sendMessage(role.getCamp().getColor() + "Pouvoirs : " + role.getPowers());
     }
 
-    // Vérifie si le joueur est un demi-dieu ou un solitaire
-    public boolean isDemigodOrSolo() {
+    /*// Vérifie si le joueur est un demi-dieu ou un solitaire
+    public boolean isDemigodOrSolo() { //Plus besoin, car gestion différente des camps
         return camp == Camp.DEMI_DIEUX || camp == Camp.SOLITAIRE;
+    }*/
+    // Vérifie si le joueur est un Sans-Éclat
+    public boolean isSansEclat() { //Utile pour l'attribution du rôle
+        return camp == Camp.BASTION_DE_LA_TABLE_RONDE; //Le seul camp possible c'est celui la, mais on le met quand même pour la clareté
     }
 }

@@ -30,6 +30,7 @@ public final class main extends JavaPlugin implements Listener {
     private static main instance; // Stocker une instance statique de la classe
     private CampfireManager campfireManager;
     private Map<Player, PlayerFlasks> playerFlasksMap;
+    private DayNightCycle dayNightCycle; // Ajout de la gestion du cycle jour/nuit
 
     @Override
     public void onEnable() {
@@ -69,14 +70,13 @@ public final class main extends JavaPlugin implements Listener {
         this.getCommand("confirmstuff").setExecutor(new ConfirmStuffCommand());
         this.getCommand("stopuhc").setExecutor(new StopUHCCommand());
 
-
-        // Enregistrer les événements
+        // Enregistrer les Événements
         getServer().getPluginManager().registerEvents(this, this);
 
         // Initialiser le scoreboard en jeu
         this.gameScoreboard = new GameScoreboard();
 
-        // Exemple : Mettre à jour le scoreboard pour tous les joueurs
+        // Démarrer la mise à jour du scoreboard
         startScoreboardUpdater();
         // Initialiser le gestionnaire de scoreboard
         this.scoreboardManager = new ScoreboardManager(this);
@@ -92,17 +92,21 @@ public final class main extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new BossManager(this), this);
         new EstusManager(this);
         new ManaPotionManager(this);
+
         // Initialiser les managers
         campfireManager = new CampfireManager();
         playerFlasksMap = new HashMap<>();
 
-        // Enregistrer les événements
+        // Enregistrer les événements liés au feu de camp
         getServer().getPluginManager().registerEvents(new CampfireListener(campfireManager, playerFlasksMap), this);
-        getServer().getPluginManager().registerEvents(new NightListener(playerFlasksMap), this);
+        // getServer().getPluginManager().registerEvents(new NightListener(playerFlasksMap), this); // Plus besoin grâce à DayNightCycle
+
         // Lancer la tâche de régénération passive
         startRegenerationTask();
-
         startFlaskUsageTask();
+
+        //Initialisation de dayNightCycle.
+        dayNightCycle = new DayNightCycle(this, Bukkit.getWorld("UHC"), 600, 600); // 10 minutes jour, 10 minutes nuit
 
         getLogger().info("Elden Ring UHC Activé !");
     }
