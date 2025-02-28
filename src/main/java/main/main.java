@@ -6,10 +6,7 @@ import main.command.StopUHCCommand;
 import main.game.*;
 import main.listeners.*;
 import main.skills.SkillManager;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,9 +86,24 @@ public final class main extends JavaPlugin implements Listener {
         new BossManager(this);
         TalismanEffects talismanEffects = new TalismanEffects(this);
         getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects), this);
-        getServer().getPluginManager().registerEvents(new BossManager(this), this);
         new EstusManager(this);
         new ManaPotionManager(this);
+
+        World uhcWorld = Bukkit.getWorld("UHC");
+        if (uhcWorld == null) {
+            uhcWorld = WorldCreator.name("UHC")
+                    .environment(World.Environment.NORMAL) // Ou .NETHER, .THE_END, selon vos besoins
+                    .type(WorldType.NORMAL)  // Ou .FLAT, .LARGE_BIOMES, etc.
+                    // Vous pouvez ajouter d'autres options ici, comme le générateur personnalisé
+                    .createWorld();
+        }
+        if (uhcWorld == null) { // Double vérification au cas où la création échoue.
+            getLogger().severe("Impossible de créer le monde UHC !");
+            Bukkit.getPluginManager().disablePlugin(this); // Désactiver le plugin si le monde ne peut pas être créé
+            return;
+        }
+
+        disableMobSpawning(); // Maintenant, le monde existe, donc ceci fonctionnera
 
         // Initialiser les managers
         campfireManager = new CampfireManager();
@@ -175,6 +187,13 @@ public final class main extends JavaPlugin implements Listener {
         // Vérifier si c'est la nuit (temps entre 13000 et 23000 ticks)
         long time = Bukkit.getWorlds().get(0).getTime();
         return time >= 13000 && time < 23000;
+    }
+
+    private void disableMobSpawning() {
+        // Désactive le spawn de tous les mobs normaux
+        Bukkit.getWorld("UHC").setSpawnFlags(false, false); // Désactive le spawn des mobs hostiles et amicaux
+        // Désactive le spawn des monstres et créatures dans le monde UHC
+        Bukkit.getWorld("UHC").setGameRule(GameRule.DO_MOB_SPAWNING, false);
     }
 
     public static main getInstance() {

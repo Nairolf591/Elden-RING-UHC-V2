@@ -1,3 +1,4 @@
+// src/main/java/main/game/BossManager.java (Corrigé + Améliorations)
 package main.game;
 
 import org.bukkit.Bukkit;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,49 +19,50 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class BossManager implements Listener {
 
     private final JavaPlugin plugin;
     private final Random random = new Random();
-    private final List<Talisman> talismans = new ArrayList<>();
+    private final List<Talisman> availableTalismans = new ArrayList<>(); // Talismans DISPONIBLES
+    private static BossManager instance;
 
     public BossManager(JavaPlugin plugin) {
         this.plugin = plugin;
         initializeTalismans();
-        disableMobSpawning();
-        startBossSpawner();
+        // disableMobSpawning();  // Déplacé dans main.java
+        // startBossSpawner(); // Déplacé dans GameManager.startStartingPhase()
+        Bukkit.getPluginManager().registerEvents(this, plugin); // Enregistrement du listener, UNE SEULE FOIS
+    }
+
+    public static BossManager getInstance(JavaPlugin plugin) {
+        if (instance == null) {
+            instance = new BossManager(plugin);
+        }
+        return instance;
     }
 
     private void initializeTalismans() {
-        talismans.add(new Talisman("Médaillon d'ambre pourpre +3", Material.EMERALD, "§a+2 cœurs permanents"));
-        talismans.add(new Talisman("Médaillon d'ambre céruléen +3", Material.LAPIS_LAZULI, "§b+30 de mana"));
-        talismans.add(new Talisman("Talisman de la lame bénie", Material.IRON_SWORD, "§e1hp/8sec"));
-        talismans.add(new Talisman("Talisman du bouclier draconique +2", Material.SHIELD, "§c+10% de résistance contre les coups"));
-        talismans.add(new Talisman("Talisman du chat à longue queue", Material.FEATHER, "§6Pas de dégâts de chute"));
-        talismans.add(new Talisman("Talisman du bouclier rituel", Material.SHIELD, "§7Quand full vie, le premier coup reçu fait seulement 1 demi cœur"));
-        talismans.add(new Talisman("Talisman d’ancien seigneur", Material.NETHER_STAR, "§dRajoute 5sec à la compétence actuellement utilisée"));
-        talismans.add(new Talisman("Lame cornue aux plumes rouges", Material.REDSTONE, "§4Quand en dessous de 5hp, 10% de force"));
-        talismans.add(new Talisman("Lame cornue aux plumes bleues", Material.LAPIS_LAZULI, "§1Quand en dessous de 5hp, 10% de résistance"));
-        talismans.add(new Talisman("Kyste du prince de la mort", Material.ROTTEN_FLESH, "§8+3 cœurs permanents"));
-        talismans.add(new Talisman("Fragment de guerrier jarre", Material.CLAY_BALL, "§a+1 dégât par compétence"));
-        talismans.add(new Talisman("Excroissance du prince de la mort", Material.BONE, "§8+1 cœur permanent"));
-        talismans.add(new Talisman("Dague pourpre de l'assassin", Material.IRON_SWORD, "§5Tous les 5 coups, 1 demi cœur de heal"));
-        talismans.add(new Talisman("Dague céruléenne de l'assassin", Material.DIAMOND_SWORD, "§1Tous les 5 coups, 10 de mana gagné"));
-        talismans.add(new Talisman("Talisman de la tortue bleue", Material.CLAY_BALL, "§b2 mana par seconde de regen"));
+        // Initialisation de la liste des talismans DISPONIBLES.
+        availableTalismans.add(new Talisman("Médaillon d'ambre pourpre +3", Material.EMERALD, "§a+2 cœurs permanents"));
+        availableTalismans.add(new Talisman("Médaillon d'ambre céruléen +3", Material.LAPIS_LAZULI, "§b+30 de mana"));
+        availableTalismans.add(new Talisman("Talisman de la lame bénie", Material.IRON_SWORD, "§e1hp/8sec"));
+        availableTalismans.add(new Talisman("Talisman du bouclier draconique +2", Material.SHIELD, "§c+10% de résistance contre les coups"));
+        availableTalismans.add(new Talisman("Talisman du chat à longue queue", Material.FEATHER, "§6Pas de dégâts de chute"));
+        availableTalismans.add(new Talisman("Talisman du bouclier rituel", Material.SHIELD, "§7Quand full vie, le premier coup reçu fait seulement 1 demi cœur"));
+        availableTalismans.add(new Talisman("Talisman d’ancien seigneur", Material.NETHER_STAR, "§dRajoute 5sec à la compétence actuellement utilisée"));
+        availableTalismans.add(new Talisman("Lame cornue aux plumes rouges", Material.REDSTONE, "§4Quand en dessous de 5hp, 10% de force"));
+        availableTalismans.add(new Talisman("Lame cornue aux plumes bleues", Material.LAPIS_LAZULI, "§1Quand en dessous de 5hp, 10% de résistance"));
+        availableTalismans.add(new Talisman("Kyste du prince de la mort", Material.ROTTEN_FLESH, "§8+3 cœurs permanents"));
+        availableTalismans.add(new Talisman("Fragment de guerrier jarre", Material.CLAY_BALL, "§a+1 dégât par compétence"));
+        availableTalismans.add(new Talisman("Excroissance du prince de la mort", Material.BONE, "§8+1 cœur Permanent"));
+        availableTalismans.add(new Talisman("Dague pourpre de l'assassin", Material.IRON_SWORD, "§5Tous les 5 coups, 1 demi cœur de heal"));
+        availableTalismans.add(new Talisman("Dague céruléenne de l'assassin", Material.DIAMOND_SWORD, "§1Tous les 5 coups, 10 de mana gagné"));
+        availableTalismans.add(new Talisman("Talisman de la tortue bleue", Material.CLAY_BALL, "§b2 mana par seconde de regen"));
     }
 
-
-    private void startBossSpawner() {
-        // Vérifie si le jeu est en mode PLAYING
-        if (GameManager.getInstance().getCurrentState() != GameState.PLAYING) {
-            plugin.getLogger().info("§cLe spawn des boss est ignoré car le jeu n'est pas en mode PLAYING.");
-            return;
-        }
-
+    public void startBossSpawner() {  // Plus besoin de vérifier l'état du jeu ici
         // Nombre aléatoire de boss entre 1 et 10
         int numberOfBosses = random.nextInt(10) + 1;
 
@@ -82,13 +83,8 @@ public class BossManager implements Listener {
         plugin.getLogger().info("§eDébut du spawn des boss : " + numberOfBosses + " boss vont apparaître dans les 20 minutes.");
     }
 
-    private void disableMobSpawning() {
-        // Désactive le spawn de tous les mobs normaux
-        Bukkit.getWorld("world").setSpawnFlags(false, false); // Désactive le spawn des mobs hostiles et amicaux
-    }
-
     private void spawnBoss() {
-        World uhcWorld = Bukkit.getWorld("UHC");
+        World uhcWorld = Bukkit.getWorld("UHC"); // Utilisez "UHC"
         if (uhcWorld == null) {
             plugin.getLogger().warning("Le monde UHC n'existe pas !");
             return;
@@ -120,7 +116,10 @@ public class BossManager implements Listener {
                 boss.setCustomName("Archer spectral");
                 boss.setMaxHealth(40);
                 boss.setHealth(40);
-                ((org.bukkit.entity.Skeleton) boss).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                // Correction: Vérifiez si le cast est possible avant de l'utiliser
+                if (boss instanceof org.bukkit.entity.Skeleton) {
+                    ((org.bukkit.entity.Skeleton) boss).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                }
                 break;
             case 2:
                 boss = (LivingEntity) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.WITHER_SKELETON);
@@ -147,30 +146,39 @@ public class BossManager implements Listener {
         Bukkit.broadcastMessage("§6Un boss est apparu " + distanceRange + " du 0 0 !");
     }
 
+    @EventHandler // AJOUTEZ CECI
     public void onBossDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof LivingEntity && event.getEntity().getCustomName() != null) {
             Player killer = event.getEntity().getKiller();
             if (killer != null) {
-                if (countTalismans(killer) < 2) {
-                    Talisman talisman = getRandomTalisman();
+                // Vérifiez si le joueur a déjà 2 talismans.
+                if (countTalismans(killer) >= 2) {
+                    killer.sendMessage("§cVous possédez déjà deux talismans. Vous ne pouvez pas en équiper davantage.");
+                    return; // Empêche d'obtenir plus de 2 talismans
+                }
+                // Gestion des doublons
+                if (availableTalismans.isEmpty())
+                {
+                    killer.sendMessage("§eIl se pourrait qu'aucun talisman n'est été généré");
+                }
+                Talisman talisman = getRandomTalisman();  // Utilise la nouvelle méthode
+                if (talisman != null) {  // Vérification supplémentaire
                     killer.getInventory().addItem(talisman.getItem());
                     killer.sendMessage("§aVous avez obtenu le Talisman : " + talisman.getName());
-                } else {
-                    killer.sendMessage("§cVous ne pouvez pas posséder plus de deux talismans.");
                 }
             }
         }
     }
 
-
     private int countTalismans(Player player) {
         int count = 0;
-        for (ItemStack item : player.getInventory()) {
+        for (ItemStack item : player.getInventory().getContents()) { //Correction avec .getContents()
             if (item != null && item.getItemMeta() != null && item.getItemMeta().getLore() != null) {
-                for (Talisman talisman : talismans) {
+                for (Talisman talisman : availableTalismans) { //On itère sur la liste
+                    //On check avec equals, et on getName();
                     if (item.getItemMeta().getDisplayName().equals(talisman.getName())) {
                         count++;
-                        break;
+                        break; // Important pour ne pas compter le même talisman plusieurs fois
                     }
                 }
             }
@@ -179,7 +187,11 @@ public class BossManager implements Listener {
     }
 
     private Talisman getRandomTalisman() {
-        return talismans.get(random.nextInt(talismans.size()));
+        if (availableTalismans.isEmpty()) {
+            return null; // Retourne null si plus de talismans disponibles
+        }
+        int index = random.nextInt(availableTalismans.size());
+        return availableTalismans.remove(index); // Retire et retourne le talisman.
     }
 
     private static class Talisman {

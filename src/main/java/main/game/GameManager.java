@@ -208,6 +208,7 @@ public class GameManager {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             this.currentState = GameState.PLAYING;
             Bukkit.broadcastMessage(ChatColor.GOLD + "Le jeu est maintenant en cours !");
+            BossManager.getInstance(main.getInstance()).startBossSpawner();
         }, 1000); // 50 secondes (1000 ticks)
 
         // Démarrer le cycle jour/nuit
