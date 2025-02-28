@@ -1,5 +1,10 @@
+// src/main/java/main/menus/CampfireMenu.java
 package main.menus;
 
+import main.game.Camp;
+import main.game.CampfireData;
+import main.game.PlayerData;
+import main.game.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +16,26 @@ import java.util.Arrays;
 
 public class CampfireMenu {
 
-    public static void openCampfireMenu(Player player) {
+    //Méthode centralisé pour ouvrir les menus
+    public static void openCampfireMenu(Player player, CampfireData campfire) {
+        // Vérifie si le joueur est dans le camp de la Table Ronde
+        PlayerData playerData = PlayerManager.getInstance().getPlayerData(player);
+
+        if(playerData == null) //Important pour éviter les NullPointerException
+        {
+            Bukkit.getLogger().warning("PlayerData null dans CampfireMenu pour le joueur " + player.getName());
+            return;
+        }
+
+        //Si il fait partie du camp,
+        //CORRECTION ICI: On vérifie si le camp est non null, ET si c'est BASTION_DE_LA_TABLE_RONDE
+        if (playerData.getCamp() != null && playerData.getCamp() == Camp.BASTION_DE_LA_TABLE_RONDE) {
+            openFlasksMenu(player); //Alors menu des fioles
+        } else {
+            openChargesMenu(player, campfire); //Sinon menu pour retirer des charges
+        }
+    }
+    private static void openFlasksMenu(Player player) {
         // Crée un inventaire de menu
         Inventory menu = Bukkit.createInventory(null, 9, "§6Feu de Camp");
 
@@ -37,16 +61,6 @@ public class CampfireMenu {
         manaItem.setItemMeta(manaMeta);
         menu.setItem(3, manaItem);
 
-        // Bouton pour les deux fioles
-        ItemStack bothItem = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
-        ItemMeta bothMeta = bothItem.getItemMeta();
-        bothMeta.setDisplayName("§dLes deux fioles");
-        bothMeta.setLore(Arrays.asList(
-                "§71 Fiole d'Estus + 1 Fiole de Mana.",
-                "§b(Utilise 2 charges)"
-        ));
-        bothItem.setItemMeta(bothMeta);
-        menu.setItem(5, bothItem);
 
         // Bouton pour quitter
         ItemStack quitItem = new ItemStack(Material.BARRIER);
@@ -59,27 +73,25 @@ public class CampfireMenu {
         player.openInventory(menu);
     }
 
-    public static void openCampfireMenuForSoloOrDemigod(Player player) {
-        // Crée un inventaire de menu spécial pour les demi-dieux et solitaires
-        Inventory menu = Bukkit.createInventory(null, 9, "§6Feu de Camp");
+    private static void openChargesMenu(Player player, CampfireData campfire)
+    {
+        Inventory menu = Bukkit.createInventory(null, 27, "§6Retirer des charges");
 
-        // Bouton pour retirer des charges
-        ItemStack chargeItem = new ItemStack(Material.CAMPFIRE);
-        ItemMeta chargeMeta = chargeItem.getItemMeta();
-        chargeMeta.setDisplayName("§6Retirer des charges");
-        chargeMeta.setLore(Arrays.asList(
-                "§7Retirez toutes les charges ou seulement une partie.",
-                "§bCliquez pour choisir."
-        ));
-        chargeItem.setItemMeta(chargeMeta);
-        menu.setItem(4, chargeItem);
+        // Boutons pour retirer de 1 à 6 charges
+        for (int i = 1; i <= 6; i++) {
+            ItemStack chargeItem = new ItemStack(Material.CHARCOAL);
+            ItemMeta chargeMeta = chargeItem.getItemMeta();
+            chargeMeta.setDisplayName("§eRetirer " + i + " charge(s)");
+            chargeItem.setItemMeta(chargeMeta);
+            menu.setItem(i + 9, chargeItem); //Pour les positionner au bon endroit
+        }
 
-        // Bouton pour quitter
-        ItemStack quitItem = new ItemStack(Material.BARRIER);
-        ItemMeta quitMeta = quitItem.getItemMeta();
-        quitMeta.setDisplayName("§cQuitter");
-        quitItem.setItemMeta(quitMeta);
-        menu.setItem(8, quitItem);
+        // Bouton pour annuler
+        ItemStack cancelItem = new ItemStack(Material.BARRIER);
+        ItemMeta cancelMeta = cancelItem.getItemMeta();
+        cancelMeta.setDisplayName("§cAnnuler");
+        cancelItem.setItemMeta(cancelMeta);
+        menu.setItem(26, cancelItem);
 
         // Ouvrir le menu au joueur
         player.openInventory(menu);

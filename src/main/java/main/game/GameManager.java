@@ -93,6 +93,8 @@ public class GameManager {
 
                     // Si le rôle est "Sans-Éclats", donner les Nether Stars
                     if (role == Role.SANS_ECLAT) {
+                        CampManager.getInstance().setPlayerCamp(player, "Bastion de la Table Ronde");
+                        playerManager.setPlayerCamp(player, Camp.BASTION_DE_LA_TABLE_RONDE); // Assigne le camp
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f); // Son de niveau up
                         player.sendMessage(ChatColor.GOLD + "╔══════════════════════════════════════════╗");
                         player.sendMessage(ChatColor.GOLD + "║               §eVous êtes §6Le Sans-Éclat §e!                           ║");
@@ -206,6 +208,7 @@ public class GameManager {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             this.currentState = GameState.PLAYING;
             Bukkit.broadcastMessage(ChatColor.GOLD + "Le jeu est maintenant en cours !");
+            BossManager.getInstance(main.getInstance()).startBossSpawner();
         }, 1000); // 50 secondes (1000 ticks)
 
         // Démarrer le cycle jour/nuit
