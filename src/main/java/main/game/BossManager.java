@@ -31,8 +31,7 @@ public class BossManager implements Listener {
     public BossManager(JavaPlugin plugin) {
         this.plugin = plugin;
         initializeTalismans();
-        // disableMobSpawning();  // Déplacé dans main.java
-        // startBossSpawner(); // Déplacé dans GameManager.startStartingPhase()
+
         Bukkit.getPluginManager().registerEvents(this, plugin); // Enregistrement du listener, UNE SEULE FOIS
     }
 
@@ -110,12 +109,14 @@ public class BossManager implements Listener {
                 boss.setHealth(50);
                 boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
                 boss.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
                 break;
             case 1:
                 boss = (LivingEntity) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.SKELETON);
                 boss.setCustomName("Archer spectral");
                 boss.setMaxHealth(40);
                 boss.setHealth(40);
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
                 // Correction: Vérifiez si le cast est possible avant de l'utiliser
                 if (boss instanceof org.bukkit.entity.Skeleton) {
                     ((org.bukkit.entity.Skeleton) boss).getEquipment().setItemInHand(new ItemStack(Material.BOW));
@@ -127,6 +128,7 @@ public class BossManager implements Listener {
                 boss.setMaxHealth(60);
                 boss.setHealth(60);
                 boss.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
                 break;
             default:
                 boss = (Zombie) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.ZOMBIE);
@@ -135,6 +137,7 @@ public class BossManager implements Listener {
                 boss.setHealth(50);
                 boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
                 boss.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0));
+                boss.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0));
                 break;
         }
 
