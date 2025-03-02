@@ -193,7 +193,7 @@ public class BossManager implements Listener {
                 }
             }
         }
-        return count;
+     return count;
     }
 
     private Talisman getRandomTalisman() {

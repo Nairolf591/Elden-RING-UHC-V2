@@ -5,6 +5,7 @@ import main.command.SetHostCommand;
 import main.command.StopUHCCommand;
 import main.game.*;
 import main.listeners.*;
+import main.role.Melina;
 import main.skills.SkillManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ public final class main extends JavaPlugin implements Listener {
     private CampfireManager campfireManager;
     private Map<Player, PlayerFlasks> playerFlasksMap;
     private DayNightCycle dayNightCycle; // Ajout de la gestion du cycle jour/nuit
+    private final JavaPlugin plugin = this;
 
     @Override
     public void onEnable() {
@@ -85,7 +87,7 @@ public final class main extends JavaPlugin implements Listener {
         SkillManager.getInstance().startCooldownChecker(this);
         new BossManager(this);
         TalismanEffects talismanEffects = new TalismanEffects(this);
-        getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects), this);
+        getServer().getPluginManager().registerEvents(new PlayerDamageListener(talismanEffects,plugin), this);
         new EstusManager(this);
         new ManaPotionManager(this);
 
@@ -117,7 +119,8 @@ public final class main extends JavaPlugin implements Listener {
         startRegenerationTask();
         startFlaskUsageTask();
         getServer().getPluginManager().registerEvents(new RadahnListener(), this);
-
+        this.getCommand("melina").setExecutor(new Melina(plugin));
+        getServer().getPluginManager().registerEvents(new Melina(plugin), this);
         //Initialisation de dayNightCycle.
         dayNightCycle = new DayNightCycle(this, Bukkit.getWorld("UHC"), 600, 600); // 10 minutes jour, 10 minutes nuit
 
