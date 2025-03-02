@@ -116,6 +116,7 @@ public final class main extends JavaPlugin implements Listener {
         // Lancer la tâche de régénération passive
         startRegenerationTask();
         startFlaskUsageTask();
+        getServer().getPluginManager().registerEvents(new RadahnListener(), this);
 
         //Initialisation de dayNightCycle.
         dayNightCycle = new DayNightCycle(this, Bukkit.getWorld("UHC"), 600, 600); // 10 minutes jour, 10 minutes nuit
