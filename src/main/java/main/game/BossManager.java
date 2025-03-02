@@ -148,29 +148,36 @@ public class BossManager implements Listener {
 
         Bukkit.broadcastMessage("§6Un boss est apparu " + distanceRange + " du 0 0 !");
     }
-
-    @EventHandler // AJOUTEZ CECI
+    @EventHandler
     public void onBossDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof LivingEntity && event.getEntity().getCustomName() != null) {
-            Player killer = event.getEntity().getKiller();
-            if (killer != null) {
-                // Vérifiez si le joueur a déjà 2 talismans.
-                if (countTalismans(killer) >= 2) {
-                    killer.sendMessage("§cVous possédez déjà deux talismans. Vous ne pouvez pas en équiper davantage.");
-                    return; // Empêche d'obtenir plus de 2 talismans
-                }
-                // Gestion des doublons
-                if (availableTalismans.isEmpty())
-                {
-                    killer.sendMessage("§eIl se pourrait qu'aucun talisman n'est été généré");
-                }
-                Talisman talisman = getRandomTalisman();  // Utilise la nouvelle méthode
-                if (talisman != null) {  // Vérification supplémentaire
-                    killer.getInventory().addItem(talisman.getItem());
-                    killer.sendMessage("§aVous avez obtenu le Talisman : " + talisman.getName());
-                }
-            }
+        if (!(event.getEntity() instanceof LivingEntity && event.getEntity().getCustomName() != null)) {
+            return; // Sortie rapide si ce n'est pas un boss nommé.
         }
+
+        Player killer = event.getEntity().getKiller();
+        if (killer == null) {
+            return; // Sortie rapide si pas de tueur.
+        }
+
+
+        //Vérification du nombre de Talismans AVANT attribution:
+        if (countTalismans(killer) >= 2) {
+            killer.sendMessage("§cVous possédez déjà deux talismans. Vous ne pouvez pas en équiper davantage.");
+            return; // Empêche d'obtenir un talisman SI DEJA 2
+        }
+
+
+        // 2. Obtenir un talisman aléatoire (si disponible)
+        Talisman talisman = getRandomTalisman();
+        if (talisman == null) {
+            killer.sendMessage("§eAucun talisman n'a été généré (ou tous ont été distribués).");
+            return; // Sortir si plus de talismans
+        }
+
+        // 3. Donner le talisman au joueur.  Cette partie est atteinte UNIQUEMENT s'il y a un tueur
+        //    ET qu'il a moins de 2 talismans, ET qu'il y a un talisman disponible.
+        killer.getInventory().addItem(talisman.getItem());
+        killer.sendMessage("§aVous avez obtenu le Talisman : " + talisman.getName());
     }
 
     private int countTalismans(Player player) {

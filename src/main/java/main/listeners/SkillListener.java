@@ -164,17 +164,14 @@ public class SkillListener implements Listener {
 
             switch (itemName) {
                 case "§4Flamme noire":
-                    new FlammeNoire().useSkill(player);
                     giveBonusSkillItem(player, "§4Flamme noire");
                     break;
 
                 case "§eVague de lames":
-                    new VagueDeLames().useSkill(player);
                     giveBonusSkillItem(player, "§eVague de lames");
                     break;
 
                 case "§bTempête de givre":
-                    new TempeteDeGivre().useSkill(player);
                     giveBonusSkillItem(player, "§bTempête de givre");
                     break;
 

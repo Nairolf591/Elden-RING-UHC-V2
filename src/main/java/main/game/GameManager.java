@@ -3,6 +3,7 @@ package main.game;
 import main.main;
 import main.ScoreboardManager;
 import main.role.Morgott;
+import main.role.Radahn;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -140,8 +141,16 @@ public class GameManager {
 
                     if (role == Role.MORGOTT) {
                         Morgott.applyMorgott(player);
+                        CampManager.getInstance().setPlayerCamp(player, "Demi-dieux"); //CORRECTION
                         Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
 
+                    }
+
+                    if (role == Role.RADAHN) {
+                        CampManager.getInstance().setPlayerCamp(player, "Solitaire"); //CORRECTION
+                        playerManager.setPlayerCamp(player, Camp.SOLITAIRE);
+                        Radahn.applyRadahn(player); // Appliquer les effets spécifiques à Radahn
+                        Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
                     }
                 }
             }
