@@ -19,3 +19,7 @@ commands:
     description: Commande pour sauvegarder l'inventaire.
     usage: /confirmstuff
     permission: op
+
+  melina:
+    description: Commande spécifique à Melina.
+    usage: /melina presence <joueur> <camp>

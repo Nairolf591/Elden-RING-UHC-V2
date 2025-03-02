@@ -58,7 +58,6 @@ public class MenuListener implements Listener {
             }
         }
 
-        // Gérer les clics dans le menu des rôles
         else if (event.getView().getTitle().equals(RolesMenu.TITLE)) {
             RoleManager roleManager = RoleManager.getInstance();
 
@@ -80,6 +79,12 @@ public class MenuListener implements Listener {
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                     player.sendMessage("§4Morgott est maintenant " + (roleManager.isRoleEnabled(Role.MORGOTT) ? "§aactivé" : "§cdésactivé") + "§4.");
                     RolesMenu.open(player); // Recharger le menu pour afficher le nouvel état
+                    break;
+                case "§6Melina": //AJOUT DU CASE
+                    roleManager.toggleRole(Role.MELINA);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                    player.sendMessage("§6Melina est maintenant " + (roleManager.isRoleEnabled(Role.MELINA) ? "§aactivé" : "§cdésactivé") + "§6.");
+                    RolesMenu.open(player); // Recharger le menu
                     break;
                 case "§c§lRetour":
                     MainMenu.open(player);

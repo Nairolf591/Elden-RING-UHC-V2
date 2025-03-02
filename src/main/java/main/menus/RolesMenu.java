@@ -19,7 +19,7 @@ public class RolesMenu {
 
     public static void open(Player player) {
         // Créer l'inventaire de menu
-        Inventory menu = Bukkit.createInventory(null, 9, TITLE);
+        Inventory menu = Bukkit.createInventory(null, 18, TITLE); //+1 pour une ligne, pour l'esthétique
 
         // Bouton pour Le Sans-Éclat
         ItemStack sansEclat = new ItemStack(Material.IRON_SWORD);
@@ -60,13 +60,26 @@ public class RolesMenu {
         morgott.setItemMeta(morgottMeta);
         menu.setItem(5, morgott);
 
+        //Bouton pour Melina
+        ItemStack melina = new ItemStack(Material.GOLDEN_SWORD);
+        ItemMeta melinaMeta = melina.getItemMeta();
+        melinaMeta.setDisplayName("§6Melina");
+        melinaMeta.setLore(Arrays.asList(
+                "§6Camp: " + Camp.BASTION_DE_LA_TABLE_RONDE.getColor() + Camp.BASTION_DE_LA_TABLE_RONDE.getName(), //On utilise .getColor()
+                "§7L'alliée des Sans-Éclats, capable de guider et renforcer leur pouvoir.",
+                RoleManager.getInstance().isRoleEnabled(Role.MELINA) ? "§aActivé" : "§cDésactivé", // Condition ternaire
+                "§eClique pour activer/désactiver ce rôle."
+        ));
+        melina.setItemMeta(melinaMeta);
+        menu.setItem(7, melina); //Mise en place du bouton
+
         // Bouton Retour
         ItemStack backButton = new ItemStack(Material.BARRIER);
         ItemMeta backButtonMeta = backButton.getItemMeta();
         backButtonMeta.setDisplayName("§c§lRetour");
         backButtonMeta.setLore(Arrays.asList("§7Cliquez pour retourner au menu principal."));
         backButton.setItemMeta(backButtonMeta);
-        menu.setItem(8, backButton);
+        menu.setItem(9, backButton);
 
         // Ouvrir le menu au joueur
         player.openInventory(menu);
