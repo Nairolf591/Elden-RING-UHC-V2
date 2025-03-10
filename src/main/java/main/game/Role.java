@@ -4,20 +4,22 @@ public enum Role {
     SANS_ECLAT(
             "Le Sans-Éclat",
             "Un humble chevalier sans gloire, mais au cœur pur.",
-            "§7Aucun pouvoir spécial pour l'instant.",
             Camp.BASTION_DE_LA_TABLE_RONDE
     ),
     RADAHN(
             "Radahn",
             "Un guerrier solitaire, maître des étoiles.",
-            "§7Aucun pouvoir spécial pour l'instant.",
             Camp.SOLITAIRE
     ),
     MORGOTT(
             "Morgott",
             "Un demi-dieu imposteur, roi de la nuit.",
-            "§7Aucun pouvoir spécial pour l'instant.",
             Camp.DEMI_DIEUX
+    ),
+    MELINA(
+            "Melina",
+            "Une mystérieuse jeune femme qui guide les Sans-Éclats.",
+            Camp.BASTION_DE_LA_TABLE_RONDE
     );
 
     private final String name;        // Nom du rôle
