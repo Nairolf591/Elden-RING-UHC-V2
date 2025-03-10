@@ -2,15 +2,24 @@ package main.game;
 
 import org.bukkit.entity.Player;
 
+    // Enum pour l'état de grâce
+    public enum GraceState {
+        GUIDED,
+        MAYBE_GUIDED,
+        NOT_GUIDED
+    }
+
 public class PlayerData {
     private final Player player; // Joueur
     private Camp camp;           // Camp du joueur
     private Role role;           // Rôle du joueur
+    private GraceState guidedByGraceState;  // Changement ici
 
     public PlayerData(Player player) {
         this.player = player;
         this.camp = null; // Aucun camp assigné par défaut
         this.role = null; // Aucun rôle assigné par défaut
+        this.guidedByGraceState = GraceState.NOT_GUIDED; // Valeur par défaut
     }
 
     // Getter et Setter pour le camp
