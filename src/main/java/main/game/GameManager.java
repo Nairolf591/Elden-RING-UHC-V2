@@ -152,6 +152,12 @@ public class GameManager {
                         Radahn.applyRadahn(player); // Appliquer les effets spécifiques à Radahn
                         Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
                     }
+                    if(role == Role.MELINA && roleManager.isRoleEnabled(Role.MELINA)){
+                        Melina.applyMelina(player); //Applique le rôle
+                        CampManager.getInstance().setPlayerCamp(player, "Bastion de la Table Ronde"); //Melina est dans le camp
+                        playerManager.setPlayerCamp(player, Camp.BASTION_DE_LA_TABLE_RONDE);
+                        Bukkit.getLogger().info("Rôle attribué à " + player.getName() + " : " + role.getName()); // Debug
+                    }
                 }
             }
         }
