@@ -81,6 +81,12 @@ public class MenuListener implements Listener {
                     player.sendMessage("§4Morgott est maintenant " + (roleManager.isRoleEnabled(Role.MORGOTT) ? "§aactivé" : "§cdésactivé") + "§4.");
                     RolesMenu.open(player); // Recharger le menu pour afficher le nouvel état
                     break;
+                case "§dMelina": //Ajout du bouton
+                    roleManager.toggleRole(Role.MELINA);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                    player.sendMessage("§dMelina est maintenant " + (roleManager.isRoleEnabled(Role.MELINA) ? "§aactivé" : "§cdésactivé") + "§d.");
+                    RolesMenu.open(player); // Recharger le menu
+                    break;
                 case "§c§lRetour":
                     MainMenu.open(player);
                     break;
