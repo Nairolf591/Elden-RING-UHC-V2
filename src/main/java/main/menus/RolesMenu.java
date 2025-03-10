@@ -60,6 +60,20 @@ public class RolesMenu {
         morgott.setItemMeta(morgottMeta);
         menu.setItem(5, morgott);
 
+        // Bouton pour Melina
+        ItemStack melina = new ItemStack(Material.IRON_SWORD); // Ou un autre item distinctif
+        ItemMeta melinaMeta = melina.getItemMeta();
+        melinaMeta.setDisplayName("§dMelina");
+        melinaMeta.setLore(Arrays.asList(
+                "§6Camp: " + Camp.BASTION_DE_LA_TABLE_RONDE.getColor() + Camp.BASTION_DE_LA_TABLE_RONDE.getName(),
+                "§7Une mystérieuse jeune femme qui guide les Sans-Éclats.",
+                RoleManager.getInstance().isRoleEnabled(Role.MELINA) ? "§aActivé" : "§cDésactivé",
+                "§eClique pour activer/désactiver ce rôle."
+        ));
+        melina.setItemMeta(melinaMeta);
+        menu.setItem(7, melina);
+
+
         // Bouton Retour
         ItemStack backButton = new ItemStack(Material.BARRIER);
         ItemMeta backButtonMeta = backButton.getItemMeta();
