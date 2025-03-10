@@ -19,3 +19,7 @@ commands:
     description: Commande pour sauvegarder l'inventaire.
     usage: /confirmstuff
     permission: op
+
+  melina_grace:
+      description: Vérifie si un joueur est guidé par la grâce.
+      usage: /melina_grace <nom_du_joueur>
