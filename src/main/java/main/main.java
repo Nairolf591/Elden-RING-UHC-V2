@@ -5,6 +5,7 @@ import main.command.SetHostCommand;
 import main.command.StopUHCCommand;
 import main.game.*;
 import main.listeners.*;
+import main.role.Melina;
 import main.skills.SkillManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -32,6 +33,8 @@ public final class main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getLogger().info("Elden Ring UHC test");
+
+        Bukkit.getPluginManager().registerEvents(new Melina(), this);
 
         // Désactiver la régénération naturelle
         Bukkit.getWorlds().forEach(world -> {
