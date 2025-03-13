@@ -51,7 +51,6 @@ public class PlayerData {
         this.role = role;
         player.sendMessage(role.getCamp().getColor() + "Tu es maintenant : " + role.getName());
         player.sendMessage(role.getCamp().getColor() + "Description : " + role.getDescription());
-        player.sendMessage(role.getCamp().getColor() + "Pouvoirs : " + role.getPowers());
     }
 
     /*// Vérifie si le joueur est un demi-dieu ou un solitaire
