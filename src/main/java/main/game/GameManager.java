@@ -2,6 +2,7 @@ package main.game;
 
 import main.main;
 import main.ScoreboardManager;
+import main.role.Melina;
 import main.role.Morgott;
 import main.role.Radahn;
 import org.bukkit.inventory.ItemStack;
