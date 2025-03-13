@@ -265,13 +265,13 @@ public class Melina implements Listener, CommandExecutor {
             Bukkit.getLogger().warning("PlayerData est null pour " + target.getName());
             return true;
         }
-        if (isGraceEligible(targetData)) { //On vérifie si il a le bon rôle
-            PlayerData.GraceState currentState = targetData.getGuidedByGraceState();
-            String message;
-            switch (currentState) {
-                case GUIDED:
-                    message = ChatColor.GREEN + target.getName() + " a déjà été guidé par la Grâce.";
-                    break;
+
+        PlayerData.GraceState currentState = targetData.getGuidedByGraceState();
+        String message;
+        switch (currentState) {
+            case GUIDED:
+                message = ChatColor.GREEN + target.getName() + " a déjà été guidé par la Grâce.";
+                break;
                 case MAYBE_GUIDED:
                     message = ChatColor.YELLOW + target.getName() + " est peut-être guidé par la Grâce.";
                     break;
@@ -285,27 +285,10 @@ public class Melina implements Listener, CommandExecutor {
              player.sendMessage(message);
 
 
-        } else {
-            player.sendMessage(ChatColor.RED + target.getName() + " n'est pas éligible pour être guidé par la grace !");
-        }
 
         setCooldown(player, "grace_command", 24 * 60 * 60); // 24 heures, géré par la fonction.
         return true;
     }
-
-
-    /**
-     * Vérifie si le joueur a le rôle requis pour être guidé par la Grâce.
-     *
-     * @param playerData Les données du joueur cible.
-          * @param playerData Les données du joueur cible.
-     * @return true si le joueur est éligible, false sinon.
-     */
-    private boolean isGraceEligible(PlayerData playerData) {
-        Role role = playerData.getRole();
-        return role == Role.SANS_ECLAT; // Seul les Sans-Éclats peuvent être guidés (Melina est déjà guidé de base, et a son propre rôle)
-    }
-
 
 
     private boolean checkGraceCommandAvailability(Player player) {
